@@ -20,10 +20,10 @@ public class PlayerObj : HuyMonoBehaviour
     protected override void LoadComponents()
     {
         base.LoadComponents();
-        //if (this.rb == null) this.LoadComponent(ref this.rb, transform, "LoadRb()");
-        this.rb = new Rigidbody2D();
-        if (this.bodyCollider == null) this.LoadComponent(ref this.bodyCollider, transform, "LoadBodyCollider()");
-        if (this.model == null) this.LoadComponent(ref this.model, transform.Find("Model"), "LoadModel()");
+        this.rb = null;
+        this.LoadComponent(ref this.rb, transform, "LoadRb()");
+        this.LoadComponent(ref this.bodyCollider, transform, "LoadBodyCollider()");
+        this.LoadComponent(ref this.model, transform.Find("Model"), "LoadModel()");
     }
 
     protected void OnEnable()

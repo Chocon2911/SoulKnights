@@ -16,6 +16,7 @@ public class HuyMonoBehaviour : MonoBehaviour
 
     protected virtual void LoadComponent<T>(ref T component, Transform obj, string message)
     {
+        if (component != null) return;
         component = obj.GetComponent<T>();
         Debug.LogWarning(transform.name + ": " + message, transform.gameObject);
     }

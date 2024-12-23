@@ -6,8 +6,12 @@ public abstract class BaseObj : HuyMonoBehaviour
 {
     //==========================================Variable==========================================
     [Header("Base Obj")]
+    // Stat
     [SerializeField] protected string id;
     [SerializeField] protected string objName;
+
+    // Unity Component
+    [SerializeField] protected SpriteRenderer model;
 
     //==========================================Get Set===========================================
     public string Id
@@ -19,5 +23,10 @@ public abstract class BaseObj : HuyMonoBehaviour
     {
         get => objName;
         set => objName = value;
+    }
+
+    public SpriteRenderer Model
+    {
+        get => model;
     }
 }

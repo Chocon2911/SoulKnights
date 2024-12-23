@@ -6,5 +6,5 @@ public interface IReloadable
 {
     public bool IsReload();
     public void Reload();
-    public void Reloading();
+    public IEnumerator Reloading();
 }

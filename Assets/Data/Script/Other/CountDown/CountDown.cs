@@ -14,6 +14,11 @@ public class CountDown
     private float waitTime = 0.01f;
 
     //==========================================Get Set===========================================
+    public float Timer
+    {
+        get => timer;
+    }
+    
     public bool IsReady
     {
         get => isReady;
@@ -32,7 +37,7 @@ public class CountDown
     {
         while (true)
         {
-            if (this.timer >= this.timeLimit)
+            if (this.timer >= this.timeLimit - this.waitTime)
             {
                 this.isReady = true;
                 yield break;

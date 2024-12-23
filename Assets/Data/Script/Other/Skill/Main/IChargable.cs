@@ -5,6 +5,6 @@ using UnityEngine;
 public interface IChargable
 {
     public int GetState();
-    public void Charging();
+    public IEnumerator Charging();
     public void ReCharge();
 }

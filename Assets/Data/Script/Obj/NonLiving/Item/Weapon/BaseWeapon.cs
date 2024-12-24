@@ -7,6 +7,6 @@ using UnityEngine;
 public abstract class BaseWeapon : BaseItem
 {
     //==========================================Variable==========================================
-    [SerializeField] protected int ManaConsumeAmount;
+    [SerializeField] protected int ManaConsumption;
     [SerializeField] protected int damage;
 }

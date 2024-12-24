@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class HuyMonoBehaviour : MonoBehaviour
 {
+    //===========================================Method===========================================
     protected virtual void ResetValue()
     {
         //For override
@@ -28,9 +29,19 @@ public class HuyMonoBehaviour : MonoBehaviour
     {
         if (components.Count > 0) return;
         foreach (Transform child in obj) components.Add(child.GetComponent<T>());
-
         Debug.LogWarning(transform.name + ": " + message, transform.gameObject);
     }
+
+    protected virtual void LoadSO<T>(ref T so, string filePath) where T : ScriptableObject
+    {
+        if (so == null || so.Equals(null))
+        {
+            so = Resources.Load<T>(filePath);
+            Debug.LogWarning(transform.name + ": LoadSO()", transform.gameObject);
+        }
+    }
+
+    //===========================================Unity============================================
 
     protected virtual void Reset()
     {

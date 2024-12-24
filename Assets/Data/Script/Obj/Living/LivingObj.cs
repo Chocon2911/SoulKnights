@@ -5,5 +5,5 @@ using UnityEngine;
 public abstract class LivingObj : BaseObj
 {
     [Header("Living Obj")]
-    [SerializeField] private float hp;
+    [SerializeField] protected float hp;
 }

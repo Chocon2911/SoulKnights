@@ -52,7 +52,7 @@ public class PlayerObj : LivingObj
 
 
     //==========================================Movement==========================================
-    private void handleMove()
+    protected virtual void handleMove()
     {
         // Null Condition
         if (this.rb == null)
@@ -76,14 +76,21 @@ public class PlayerObj : LivingObj
         if (Input.GetKeyDown(input.FrontMove) || Input.GetKey(input.FrontMove)) this.movement.MoveDir = new Vector2(this.movement.MoveDir.x, 1);
         else if (Input.GetKeyDown(input.BackMove) || Input.GetKey(input.BackMove)) this.movement.MoveDir = new Vector2(this.movement.MoveDir.x, -1);
 
+        // Move
         this.movement.Move();
     }
 
     //===========================================Weapon===========================================
+    protected virtual void handleWeapon()
+    {
 
+    }
 
     //======================================Character Skill=======================================
+    protected virtual void handleCharacterSkill()
+    {
 
+    }
 
     //===========================================Other============================================
     private void DefaultStat()

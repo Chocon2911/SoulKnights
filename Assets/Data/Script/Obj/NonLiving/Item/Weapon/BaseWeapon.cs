@@ -7,6 +7,8 @@ using UnityEngine;
 public abstract class BaseWeapon : BaseItem
 {
     //==========================================Variable==========================================
-    [SerializeField] protected int ManaConsumption;
-    [SerializeField] protected int damage;
+    // Child Component
+    [SerializeField] protected BaseSkill skill1;
+    [SerializeField] protected BaseSkill skill2;
+
 }

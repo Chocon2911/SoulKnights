@@ -8,6 +8,7 @@ public class CountDown
 {
     //==========================================Variable==========================================
     [Header("Count Down")]
+    // Stat
     [SerializeField] private float timeLimit;
     [SerializeField] private float timer;
     [SerializeField] private bool isReady;
@@ -27,6 +28,7 @@ public class CountDown
     //========================================Constructor=========================================
     public CountDown(float timeLimit)
     {
+        // Stat
         this.timeLimit = timeLimit;
         this.timer = 0;
         this.isReady = false;
@@ -39,14 +41,19 @@ public class CountDown
         {
             if (this.timer >= this.timeLimit - this.waitTime)
             {
+                this.PerformWhenCountDone();
                 this.isReady = true;
                 yield break;
             }
 
+            this.PerformWhileCounting();
             this.timer += this.waitTime;
             yield return new WaitForSeconds(this.waitTime);
         }
     }
+
+    public System.Action PerformWhileCounting;
+    public System.Action PerformWhenCountDone;
 
     public void ResetTimer()
     {

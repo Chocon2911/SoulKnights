@@ -26,6 +26,9 @@ public class InputManager : HuyMonoBehaviour
     [SerializeField] private KeyCode hotBar8 = KeyCode.Alpha8;
     [SerializeField] private KeyCode hotBar9 = KeyCode.Alpha9;
 
+    [SerializeField] private KeyCode leftMouse = KeyCode.Mouse0;
+    [SerializeField] private KeyCode rightMouse = KeyCode.Mouse1;
+
     //==========================================Get Set===========================================
     public static InputManager Instace => instance;
 
@@ -35,8 +38,10 @@ public class InputManager : HuyMonoBehaviour
     public KeyCode FrontMove => frontMove;
     public KeyCode BackMove => backMove;
 
+
     public KeyCode Shift => shift;
     public KeyCode Space => space;
+
 
     public KeyCode HotBar1 => hotBar1;
     public KeyCode HotBar2 => hotBar2;
@@ -47,6 +52,10 @@ public class InputManager : HuyMonoBehaviour
     public KeyCode HotBar7 => hotBar7;
     public KeyCode HotBar8 => hotBar8;
     public KeyCode HotBar9 => hotBar9;
+
+
+    public KeyCode LeftMouse => leftMouse;
+    public KeyCode RightClick => rightMouse;
 
     //===========================================Unity============================================
     protected override void Awake()

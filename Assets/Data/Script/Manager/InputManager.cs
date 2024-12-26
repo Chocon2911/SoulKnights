@@ -7,6 +7,7 @@ public class InputManager : HuyMonoBehaviour
     //==========================================Variable==========================================
     private static InputManager instance;
 
+    [Header("Input")]
     //===Input===
     [SerializeField] private KeyCode leftMove = KeyCode.A;
     [SerializeField] private KeyCode rightMove = KeyCode.D;
@@ -28,6 +29,13 @@ public class InputManager : HuyMonoBehaviour
 
     [SerializeField] private KeyCode leftMouse = KeyCode.Mouse0;
     [SerializeField] private KeyCode rightMouse = KeyCode.Mouse1;
+
+    [Header("Stat")]
+    [SerializeField] private Vector2 moveDir;
+    [SerializeField] private int leftClickState;
+    [SerializeField] private int rightClickState;
+    [SerializeField] private int shiftState;
+    [SerializeField] private int spaceState;
 
     //==========================================Get Set===========================================
     public static InputManager Instace => instance;
@@ -56,6 +64,51 @@ public class InputManager : HuyMonoBehaviour
 
     public KeyCode LeftMouse => leftMouse;
     public KeyCode RightClick => rightMouse;
+
+    //===Stat===
+    public Vector2 MoveDir => moveDir;
+    public int LeftClickState => leftClickState;
+    public int RightClickState => rightClickState;
+    public int ShiftState => shiftState;
+    public int SpaceState => spaceState;
+
+    //===========================================Unity============================================
+    private void FixedUpdate()
+    {
+        this.handleInput();
+    }
+
+    //===========================================Method===========================================
+    private void handleInput()
+    {
+        //===Reset===
+        this.moveDir = Vector2.zero;
+        this.leftClickState = 0;
+        this.rightClickState = 0;
+        this.shiftState = 0;
+        this.spaceState = 0;
+
+        //===Handle===
+        //MoveDir
+        if (Input.GetKeyDown(this.rightMove) || Input.GetKey(this.rightMove)) this.moveDir.x = 1;
+        else if (Input.GetKeyDown(this.leftMove) || Input.GetKey(this.leftMove)) this.moveDir.x = -1;
+
+        if (Input.GetKeyDown(this.backMove) || Input.GetKey(this.backMove)) this.moveDir.y = -1;
+        else if (Input.GetKeyDown(this.frontMove) || Input.GetKey(this.frontMove)) this.moveDir.y = 1;
+
+        //State
+        if (Input.GetKeyDown(this.leftMouse)) this.leftClickState = 1;
+        if (Input.GetKey(this.leftMouse)) this.leftClickState = 2;
+
+        if (Input.GetKeyDown(this.rightMouse)) this.rightClickState = 1;
+        if (Input.GetKey(this.rightMouse)) this.rightClickState = 2;
+        
+        if (Input.GetKeyDown(this.shift)) this.shiftState = 1;
+        if (Input.GetKey(this.shift)) this.shiftState = 2;
+
+        if (Input.GetKeyDown(this.space)) this.spaceState = 1;
+        if (Input.GetKey(this.space)) this.spaceState = 2;
+    }
 
     //===========================================Unity============================================
     protected override void Awake()

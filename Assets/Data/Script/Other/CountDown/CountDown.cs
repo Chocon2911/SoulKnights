@@ -19,7 +19,7 @@ public class CountDown
     {
         get => timer;
     }
-    
+
     public bool IsReady
     {
         get => isReady;
@@ -52,8 +52,8 @@ public class CountDown
         }
     }
 
-    public System.Action PerformWhileCounting;
-    public System.Action PerformWhenCountDone;
+    public System.Action PerformWhileCounting = () => { };
+    public System.Action PerformWhenCountDone = () => { };
 
     public void ResetTimer()
     {

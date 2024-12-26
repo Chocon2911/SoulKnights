@@ -44,7 +44,7 @@ public class PlayerObj : LivingObj
         this.DefaultStat();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         this.handleMove();
     }
@@ -68,15 +68,8 @@ public class PlayerObj : LivingObj
             return;
         }
 
-        // MoveDir Handle
-        this.movement.MoveDir = Vector2.zero;
-        if (Input.GetKeyDown(input.RightMove) || Input.GetKey(input.RightMove)) this.movement.MoveDir = new Vector2(1, this.movement.MoveDir.y);
-        else if (Input.GetKeyDown(input.LeftMove) || Input.GetKey(input.LeftMove)) this.movement.MoveDir = new Vector2(-1, this.movement.MoveDir.y);
-
-        if (Input.GetKeyDown(input.FrontMove) || Input.GetKey(input.FrontMove)) this.movement.MoveDir = new Vector2(this.movement.MoveDir.x, 1);
-        else if (Input.GetKeyDown(input.BackMove) || Input.GetKey(input.BackMove)) this.movement.MoveDir = new Vector2(this.movement.MoveDir.x, -1);
-
-        // Move
+        // Move Handle
+        this.movement.MoveDir = input.MoveDir;
         this.movement.Move();
     }
 

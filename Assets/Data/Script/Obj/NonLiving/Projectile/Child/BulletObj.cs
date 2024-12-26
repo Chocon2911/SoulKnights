@@ -4,16 +4,19 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
-public abstract class BulletObj : NonLivingObj
+public abstract class BulletObj : BaseProjectile
 {
     //==========================================Variable==========================================
-    [Header("Bullet Obj Manager")]
+    [Header("Bullet Obj")]
+    // Stat
+    [SerializeField] protected float flySpeed;
+
     // Unity Component
-    [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private CapsuleCollider2D bodyCollider;
+    [SerializeField] protected Rigidbody2D rb;
+    [SerializeField] protected CapsuleCollider2D bodyCollider;
 
     // Obj
-    [SerializeField] private Movement movement;
+    [SerializeField] protected Movement movement;
 
     //===========================================Unity============================================
     protected override void LoadComponents()

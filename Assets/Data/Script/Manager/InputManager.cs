@@ -38,7 +38,7 @@ public class InputManager : HuyMonoBehaviour
     [SerializeField] private int spaceState;
 
     //==========================================Get Set===========================================
-    public static InputManager Instace => instance;
+    public static InputManager Instance => instance;
 
     //===Input===
     public KeyCode LeftMove => leftMove;

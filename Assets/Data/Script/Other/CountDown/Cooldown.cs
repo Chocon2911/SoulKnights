@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class CountDown
+public class Cooldown
 {
     //==========================================Variable==========================================
-    [Header("Count Down")]
+    [Header("Cool Down")]
     // Stat
     [SerializeField] private float timeLimit;
     [SerializeField] private float timer;
@@ -26,7 +26,7 @@ public class CountDown
     }
 
     //========================================Constructor=========================================
-    public CountDown(float timeLimit)
+    public Cooldown(float timeLimit)
     {
         // Stat
         this.timeLimit = timeLimit;

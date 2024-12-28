@@ -19,11 +19,22 @@ public class PlayerObj : LivingObj
 
     // Child Component
     [SerializeField] protected PlayerSO so;
-    [SerializeField] protected Movement movement;
-    [SerializeField] protected List<BaseWeapon> weapons;
-    [SerializeField] protected BaseSkill characterSkill;
+    [SerializeField] protected PlayerMovement movement;
+    [SerializeField] protected PlayerWeapon weapon;
+    [SerializeField] protected PlayerStat stat;
 
+    //==========================================Get Set===========================================
+    // Stat
+    public float MoveSpeed => this.moveSpeed;
 
+    // Unity Component
+    public Rigidbody2D Rb => this.rb;
+    public CapsuleCollider2D BodyCollider => this.bodyCollider;
+
+    // Child Component
+    public PlayerMovement Movement => this.movement;
+    public PlayerWeapon Weapon => this.weapon;
+    public PlayerStat Stat => this.stat;
 
     //===========================================Unity============================================
     protected override void LoadComponents()
@@ -32,57 +43,30 @@ public class PlayerObj : LivingObj
         // SO
         string filePath = "SO/Living/Player/" + transform.name;
         this.LoadSO<PlayerSO>(ref this.so, filePath);
+
         // Unity Component
         this.LoadComponent(ref this.rb, transform, "LoadRb()");
         this.LoadComponent(ref this.bodyCollider, transform, "LoadBodyCollider()");
         this.LoadComponent(ref this.model, transform.Find("Model"), "LoadModel()");
+
+        // Child Component
+        this.LoadComponent(ref this.movement, transform.Find("Movement"), "LoadMovement()");
+        //this.LoadComponent(ref this.weapon, transform.Find("Weapon"), "LoadWeapon()");
+        //this.LoadComponent(ref this.stat, transform.Find("Stat"), "LoadStat()");
+    }
+
+    private void Update()
+    {
+        this.movement.Handling();
     }
 
     private void OnEnable()
     {
         this.LoadComponents();
         this.DefaultStat();
-    }
 
-    private void FixedUpdate()
-    {
-        this.handleMove();
-    }
-
-
-
-    //==========================================Movement==========================================
-    protected virtual void handleMove()
-    {
-        // Null Condition
-        if (this.rb == null)
-        {
-            Debug.LogError("Rb is null", transform.gameObject);
-            return;
-        }
-
-        InputManager input = InputManager.Instace;
-        if (input == null)
-        {
-            Debug.LogError("Input is null", transform.gameObject);
-            return;
-        }
-
-        // Move Handle
-        this.movement.MoveDir = input.MoveDir;
-        this.movement.Move();
-    }
-
-    //===========================================Weapon===========================================
-    protected virtual void handleWeapon()
-    {
-
-    }
-
-    //======================================Character Skill=======================================
-    protected virtual void handleCharacterSkill()
-    {
-
+        // Child Component
+        this.movement.DefaultStat();
     }
 
     //===========================================Other============================================
@@ -97,9 +81,5 @@ public class PlayerObj : LivingObj
         // SO
         this.objName = this.so.name;
         this.moveSpeed = this.so.MoveSpeed;
-
-        // Child Component
-        this.movement = new Movement(this.rb);
-        this.movement.MoveSpeed = this.moveSpeed;
     }
 }

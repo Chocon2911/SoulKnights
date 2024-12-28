@@ -5,5 +5,5 @@ using UnityEngine;
 
 public abstract class BaseSkill
 {
-    public abstract void PerformSkill();
+    
 }

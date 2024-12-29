@@ -5,8 +5,12 @@ using UnityEngine;
 public abstract class BaseProjectile : BaseItem
 {
     //==========================================Variable==========================================
-    [SerializeField] private Collider2D bodyCollider;
+    [SerializeField] protected Collider2D bodyCollider;
     [SerializeField] protected bool canGoThrough;
+
+    //==========================================Get Set===========================================
+    public Collider2D BodyCollider => bodyCollider;
+    public bool CanGoThrough => canGoThrough;
 
     //==========================================Delegate==========================================
     System.Action PerformAtBegin = () => { };

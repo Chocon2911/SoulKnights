@@ -11,8 +11,7 @@ public class Cooldown
     // Stat
     [SerializeField] private float timeLimit;
     [SerializeField] private float timer;
-    [SerializeField] private bool isReady;
-    private float waitTime = 0.01f;
+    [SerializeField] private float waitTime;
 
     //==========================================Get Set===========================================
     public float Timer
@@ -22,42 +21,31 @@ public class Cooldown
 
     public bool IsReady
     {
-        get => isReady;
+        get => this.timer >= this.timeLimit;
     }
 
     //========================================Constructor=========================================
-    public Cooldown(float timeLimit)
+    public Cooldown(float timeLimit, float waitTime)
     {
         // Stat
         this.timeLimit = timeLimit;
+        this.waitTime = waitTime;
         this.timer = 0;
-        this.isReady = false;
     }
 
     //===========================================Method===========================================
-    public IEnumerator Counting()
+    public void Counting()
     {
-        while (true)
-        {
-            if (this.timer >= this.timeLimit - this.waitTime)
-            {
-                this.PerformWhenCountDone();
-                this.isReady = true;
-                yield break;
-            }
-
-            this.PerformWhileCounting();
-            this.timer += this.waitTime;
-            yield return new WaitForSeconds(this.waitTime);
-        }
+        if (this.timer >= this.timeLimit - this.waitTime) return;
+        
+        this.PerformWhileCounting();
+        this.timer += this.waitTime;
     }
 
     public System.Action PerformWhileCounting = () => { };
-    public System.Action PerformWhenCountDone = () => { };
 
     public void ResetTimer()
     {
         this.timer = 0;
-        this.isReady = false;
     }
 }

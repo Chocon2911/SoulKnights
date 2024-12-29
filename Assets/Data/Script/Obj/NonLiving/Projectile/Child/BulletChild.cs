@@ -2,26 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PlayerComponent : HuyMonoBehaviour
+public class BulletChild : HuyMonoBehaviour
 {
     //==========================================Variable==========================================
-    [Header("Player Component")]
-    [SerializeField] protected PlayerObj player;
+    [Header("Bullet Child")]
+    [SerializeField] protected Bullet bullet;
 
     //===========================================Unity============================================
     protected override void LoadComponents()
     {
         base.LoadComponents();
-        this.LoadComponent(ref this.player, transform.parent, "LoadPlayer()");
+        this.LoadComponent(ref this.bullet, transform.parent, "LoadBullet()");
     }
 
     //==========================================Abstract==========================================
     public virtual void DefaultStat()
     {
-        if (this.player == null)
-        {
-            Debug.LogError("Player is null", transform.gameObject);
-            return;
-        }
+        //if (this.bullet == null || this.bullet.so == null)
+        //{
+        //    Debug.LogError("SO is null", transform.gameObject);
+        //    return;
+        //}
     }
 }

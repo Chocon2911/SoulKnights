@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class BaseSkill : HuyMonoBehaviour
+public class NonLivingSO : ObjSO
 {
-    [SerializeField] protected Cooldown skillCD;
+    
 }

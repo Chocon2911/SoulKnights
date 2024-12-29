@@ -4,5 +4,7 @@ using UnityEngine;
 
 public class PlayerWeapon : PlayerComponent
 {
-    
+    //==========================================Variable==========================================
+    [SerializeField] private Weapon weapon1;
+    [SerializeField] private Weapon weapon2;
 }

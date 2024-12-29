@@ -51,8 +51,8 @@ public class PlayerObj : LivingObj
 
         // Child Component
         this.LoadComponent(ref this.movement, transform.Find("Movement"), "LoadMovement()");
-        //this.LoadComponent(ref this.weapon, transform.Find("Weapon"), "LoadWeapon()");
-        //this.LoadComponent(ref this.stat, transform.Find("Stat"), "LoadStat()");
+        this.LoadComponent(ref this.weapon, transform.Find("Weapon"), "LoadWeapon()");
+        this.LoadComponent(ref this.stat, transform.Find("Stat"), "LoadStat()");
     }
 
     private void Update()

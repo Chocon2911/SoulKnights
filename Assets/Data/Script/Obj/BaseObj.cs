@@ -5,13 +5,9 @@ using UnityEngine;
 public abstract class BaseObj : HuyMonoBehaviour
 {
     //==========================================Variable==========================================
-    [Header("Base Obj")]
-    // Stat
+    [Header("Obj")]
     [SerializeField] protected string id;
     [SerializeField] protected string objName;
-
-    // Unity Component
-    [SerializeField] protected SpriteRenderer model;
 
     //==========================================Get Set===========================================
     public string Id
@@ -19,14 +15,13 @@ public abstract class BaseObj : HuyMonoBehaviour
         get => id;
         set => id = value;
     }
+
     public string ObjName
     {
         get => objName;
-        set => objName = value;
+        set => ObjName = value;
     }
 
-    public SpriteRenderer Model
-    {
-        get => model;
-    }
+    //===========================================Other============================================
+    protected abstract void DefaultStat();
 }

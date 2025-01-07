@@ -36,6 +36,7 @@ public class InputManager : HuyMonoBehaviour
     [SerializeField] private int rightClickState;
     [SerializeField] private int shiftState;
     [SerializeField] private int spaceState;
+    [SerializeField] private Vector2 mousePos;
 
     //==========================================Get Set===========================================
     public static InputManager Instance => instance;
@@ -71,9 +72,10 @@ public class InputManager : HuyMonoBehaviour
     public int RightClickState => rightClickState;
     public int ShiftState => shiftState;
     public int SpaceState => spaceState;
+    public Vector2 MousePos => mousePos;
 
     //===========================================Unity============================================
-    private void FixedUpdate()
+    private void Update()
     {
         this.handleInput();
     }
@@ -98,16 +100,19 @@ public class InputManager : HuyMonoBehaviour
 
         //State
         if (Input.GetKeyDown(this.leftMouse)) this.leftClickState = 1;
-        if (Input.GetKey(this.leftMouse)) this.leftClickState = 2;
+        else if (Input.GetKey(this.leftMouse) && this.leftClickState == 1) this.leftClickState = 2;
 
         if (Input.GetKeyDown(this.rightMouse)) this.rightClickState = 1;
-        if (Input.GetKey(this.rightMouse)) this.rightClickState = 2;
+        else if (Input.GetKey(this.rightMouse) && this.rightClickState == 1) this.rightClickState = 2;
         
         if (Input.GetKeyDown(this.shift)) this.shiftState = 1;
-        if (Input.GetKey(this.shift)) this.shiftState = 2;
+        else if (Input.GetKey(this.shift) && this.shiftState == 1) this.shiftState = 2;
 
         if (Input.GetKeyDown(this.space)) this.spaceState = 1;
-        if (Input.GetKey(this.space)) this.spaceState = 2;
+        else if (Input.GetKey(this.space) && this.spaceState == 1) this.spaceState = 2;
+
+        // MousePos
+        this.mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
     //===========================================Unity============================================

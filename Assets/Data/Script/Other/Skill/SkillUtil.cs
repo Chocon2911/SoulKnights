@@ -59,9 +59,14 @@ public class SkillUtil
     }
 
     //===========================================Other============================================
-    public void ConsumePower(Player player, Skill skill)
+    public void ConsumeHp(HpReceiver receiver, Skill skill)
     {
-        player.HpRecv.Receive(-skill.HpCost);
-        player.ManaRecv.Receive(-skill.ManaCost);
+        if (receiver.GetCurrHp() <= skill.HpCost) return;
+        receiver.Receive(-skill.HpCost);
+    }
+
+    public void ConsumeMana(ManaReceiver receiver, Skill skill) 
+    {
+        receiver.Receive(-skill.ManaCost);
     }
 }

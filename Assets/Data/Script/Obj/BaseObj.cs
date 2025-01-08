@@ -8,6 +8,8 @@ public abstract class BaseObj : HuyMonoBehaviour
     [Header("Obj")]
     [SerializeField] protected string id;
     [SerializeField] protected string objName;
+    [SerializeField] protected SpriteRenderer image;
+    [SerializeField] protected Animator myAnimator;
 
     //==========================================Get Set===========================================
     public string Id
@@ -20,6 +22,15 @@ public abstract class BaseObj : HuyMonoBehaviour
     {
         get => objName;
         set => ObjName = value;
+    }
+
+    public SpriteRenderer Image
+    {
+        get => image;
+    }
+    public Animator MyAnimator
+    {
+        get => myAnimator;
     }
 
     //===========================================Other============================================

@@ -25,12 +25,13 @@ public class M4 : Weapon, IAttackable
         if (newBullet == null) return;
         
         newBullet.gameObject.SetActive(true);
-        SkillUtil.Instance.ConsumePower(player, this.skill);
+        SkillUtil.Instance.ConsumeHp(player, this.skill);
+        SkillUtil.Instance.ConsumeMana(player, this.skill);
     }
 
     //==========================================Override==========================================
     protected override void DefaultStat()
     {
-        throw new System.NotImplementedException();
+        
     }
 }

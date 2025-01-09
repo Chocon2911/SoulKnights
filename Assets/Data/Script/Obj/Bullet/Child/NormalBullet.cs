@@ -5,6 +5,12 @@ using UnityEngine;
 public class NormalBullet : Bullet
 {
     //===========================================Unity============================================
+    protected override void LoadComponents()
+    {
+        this.LoadSO(ref this.so, "SO/Projectile/Bullet/NormalBullet");
+        base.LoadComponents();
+    }
+
     protected override void FixedUpdate()
     {
         base.FixedUpdate();

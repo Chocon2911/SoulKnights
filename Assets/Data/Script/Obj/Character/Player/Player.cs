@@ -1,41 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver, FireEffReceiver
 {
     //==========================================Variable==========================================
-    [Header("Player")]
-    // Stat
+    [Space(25)]
+    [Header("//============================================================================================")]
+    [Space(25)]
+    [Header("===Player===")]
+    [Header("// Stat")]
     [SerializeField] protected int maxMana;
     [SerializeField] protected int mana;
+    [SerializeField] protected int maxAmor;
+    [SerializeField] protected int amor;
     [SerializeField] protected DamagableType factionType;
 
-    // Dash Skill    
+    [Header("// Dash Skill")]    
     [SerializeField] protected Skill dashSkill;
     [SerializeField] protected Cooldown dashCD;
     [SerializeField] protected Vector2 dashDir;
-    [SerializeField] protected float dashTime;
     [SerializeField] protected float dashSpeed;
     [SerializeField] protected bool canDash;
     [SerializeField] protected bool canDashCD;
 
-    // Weapon
+    [Header("// Weapon")]
     [SerializeField] protected List<Weapon> weapons;
     [SerializeField] protected int maxWeaponSlot;
     [SerializeField] protected int currWeaponSlot;
 
-    // Amor Regen
+    [Header("// Amor Regen")]
     [SerializeField] protected Cooldown amorRegenCD;
-    [SerializeField] protected int maxAmor;
-    [SerializeField] protected int amor;
-    [SerializeField] protected float amorRegenRate;
     [SerializeField] protected bool canRegenAmor;
-
-    // Component
-    [SerializeField] protected PlayerSO so;
-    [SerializeField] protected HpReceiver hpRecv;
-    [SerializeField] protected HpSender manaRecv;
 
     //==========================================Get Set===========================================
     // Stat
@@ -48,22 +45,20 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     public int Amor => amor;
     public DamagableType FactionType => FactionType;
 
-    // Component
-    public HpReceiver HpRecv => hpRecv;
-    public HpSender ManaRecv => manaRecv;
-
 
 
     //===========================================Unity============================================
     protected override void LoadComponents()
     {
         base.LoadComponents();
-        // Load Component
-        this.LoadComponent(ref this.hpRecv, transform.Find("Stat"), "LoadHpRecv()");
-        this.LoadComponent(ref this.manaRecv, transform.Find("Stat"), "LoadManaRecv()");
-
+        this.LoadComponent(ref this.weapons, transform.Find("Weapon"), "LoadWeapons()");
         // Default
         this.DefaultStat();
+    }
+
+    protected virtual void Start()
+    {
+        this.Revive();
     }
 
     protected virtual void Update()
@@ -76,6 +71,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.Moving();
         this.DashFUpdate();
         this.WeaponHolding();
+        this.WeaponHandling();
         this.AmorRegenerating();
     }
 
@@ -86,7 +82,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     //============================================================================================
     protected void Moving()
     {
-        if (this.canDash) return;
+        if (!this.canMove || !this.canDash) return;
         MovementUtil.Instance.MoveByKeyboard(this.rb, this.moveSpeed);
     }
 
@@ -142,19 +138,6 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.dashSkill.SkillCD.CoolingDown();
     }
 
-    //===Start===
-    protected virtual void DefaultDash()
-    {
-        this.canDash = false;
-        this.canDashCD = true;
-
-        this.dashCD = new Cooldown(this.dashTime, Time.captureDeltaTime);
-        this.dashCD.OnCD = () =>
-        {
-            MovementUtil.Instance.Move(this.rb, dashSpeed, this.dashDir);
-        };
-    }
-
 
 
     //============================================================================================
@@ -168,6 +151,8 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
 
     protected virtual void WeaponHolding()
     {
+        if (this.weapons.Count < this.currWeaponSlot || this.weapons[this.currWeaponSlot - 1] == null) return;
+
         Vector2 distance = InputManager.Instance.MousePos - (Vector2)transform.position;
         float angle = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg;
         this.weapons[this.currWeaponSlot - 1].HoldingWeapon(transform, angle);
@@ -175,6 +160,8 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
 
     protected virtual void WeaponHandling()
     {
+        if (this.weapons[this.currWeaponSlot - 1] == null) return;
+
         if (this.weapons[this.currWeaponSlot - 1] is IAttackable)
         {
             IAttackable firstAtk = (IAttackable)this.weapons[this.currWeaponSlot - 1];
@@ -184,7 +171,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         if (this.weapons[this.currWeaponSlot - 1] is ISecondaryAttack)
         {
             ISecondaryAttack secondaryAtk = (ISecondaryAttack)this.weapons[this.currWeaponSlot - 1];
-            secondaryAtk.SecondaryAttack(InputManager.Instance.RightClickState);
+            secondaryAtk.SecondaryAttack(this, InputManager.Instance.RightClickState);
         }
     }
 
@@ -199,7 +186,6 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     {
         return this.factionType;
     }
-
     //========================================Hp Receiver=========================================
     int HpReceiver.GetCurrHp()
     {
@@ -257,12 +243,6 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         }
     }
 
-    protected virtual void DefaultAmorRegen()
-    {
-        this.canRegenAmor = false;
-        this.amorRegenCD.TimeLimit = this.amorRegenRate;
-    }
-
 
 
     //============================================================================================
@@ -272,7 +252,40 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     {
         this.hp = this.maxHp;
         this.mana = this.maxMana;
-        this.amor = this.maxMana;
+        this.amor = this.maxAmor;
+    }
+
+    protected virtual void DefaultPlayerStat(PlayerSO playerSO)
+    {
+        this.maxMana = playerSO.MaxMana;
+        this.maxAmor = playerSO.MaxAmor;
+        this.factionType = DamagableType.PLAYER;
+    }
+
+    protected virtual void DefaultDashSkill(PlayerSO playerSO)
+    {
+        this.canDash = false;
+        this.canDashCD = true;
+        this.dashSpeed = playerSO.DashSpeed;
+
+        Cooldown dashSkillCD = new Cooldown(playerSO.DashTime, Time.fixedDeltaTime);
+        this.dashSkill = new Skill(playerSO.DashSkillMC, playerSO.DashSkillHC, dashSkillCD);
+
+        this.dashCD.OnCD = () =>
+        {
+            MovementUtil.Instance.Move(this.rb, dashSpeed, this.dashDir);
+        };
+    }
+
+    protected virtual void DefaultWeapon(PlayerSO playerSO)
+    {
+        this.maxWeaponSlot = playerSO.MaxWeaponSlot;
+    }
+
+    protected virtual void DefaultAmorRegen(PlayerSO playerSO)
+    {
+        this.amorRegenCD = new Cooldown(playerSO.AmorRegenTime, Time.fixedDeltaTime);
+        this.canRegenAmor = false;
     }
 
 
@@ -282,36 +295,17 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     //============================================================================================
     protected override void DefaultStat()
     {
-        if (this.so == null)
+        base.DefaultStat();
+        PlayerSO playerSO = (PlayerSO)this.so;
+        if (playerSO == null)
         {
             Debug.LogError("PlayerSO is null", transform.gameObject);
             return;
         }
 
-        // ===Obj===
-        this.objName = this.so.ObjName;
-
-        // ===Character===
-        this.maxHp = this.so.MaxHp;
-        this.moveSpeed = this.so.MoveSpeed;
-
-        // ===Player===
-        // Stat
-        this.maxMana = this.so.MaxMana;
-        this.factionType = DamagableType.PLAYER;
-        
-        // Dash
-        this.dashSpeed = this.so.DashSpeed;
-
-        // Amor Regen
-        this.maxAmor = this.so.MaxAmor;
-
-        // Component
-        this.rb.isKinematic = false;
-        this.bodyCollider.isTrigger = false;
-
-        // Default
-        this.DefaultDash();
-        this.DefaultAmorRegen();
+        this.DefaultPlayerStat(playerSO);
+        this.DefaultDashSkill(playerSO);
+        this.DefaultWeapon(playerSO);
+        this.DefaultAmorRegen(playerSO);
     }
 }

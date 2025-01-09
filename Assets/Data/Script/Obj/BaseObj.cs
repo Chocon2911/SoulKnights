@@ -5,9 +5,13 @@ using UnityEngine;
 public abstract class BaseObj : HuyMonoBehaviour
 {
     //==========================================Variable==========================================
-    [Header("Obj")]
+    [Header("===Obj===")]
+    // Stat
     [SerializeField] protected string id;
     [SerializeField] protected string objName;
+
+    // Component
+    [SerializeField] protected ObjSO so;
     [SerializeField] protected SpriteRenderer image;
     [SerializeField] protected Animator myAnimator;
 
@@ -33,6 +37,24 @@ public abstract class BaseObj : HuyMonoBehaviour
         get => myAnimator;
     }
 
-    //===========================================Other============================================
-    protected abstract void DefaultStat();
+    //===========================================Unity============================================
+    protected override void LoadComponents()
+    {
+        base.LoadComponents();
+        this.LoadComponent(ref this.image, transform.Find("Model"), "LoadImage()");
+        this.LoadComponent(ref this.myAnimator, transform.Find("Model"), "LoadAnimator()");
+    }
+
+    //==========================================Abstract==========================================
+    protected virtual void DefaultStat()
+    {
+        if (this.so == null)
+        {
+            Debug.LogError("ObjSO is null", transform.gameObject);
+            return;
+        }
+
+        this.id = this.so.Id;
+        this.objName = this.so.ObjName;
+    }
 }

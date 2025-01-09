@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface ISecondaryAttack 
 {
-    public void SecondaryAttack(int state);
+    public void SecondaryAttack(Player player, int state);
 }

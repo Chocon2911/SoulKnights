@@ -21,13 +21,7 @@ public class DespawnUtil
     //========================================Constructor=========================================
     public DespawnUtil()
     {
-        if (instance != null)
-        {
-            Debug.LogError("One DespawnUtil Only");
-            return;
-        }
-
-        instance = new DespawnUtil();
+        if (instance != null) Debug.LogError("One DespawnUtil Only");
     }
 
     //===========================================Method===========================================

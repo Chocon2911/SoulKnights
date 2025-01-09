@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CapsuleCollider2D))]
 public abstract class Bullet : BaseObj, HpSender
 {
     //==========================================Variable==========================================
-    [Header("Bullet")]
+    [Space(25)]
+    [Header("//============================================================================================")]
+    [Space(25)]
+    [Header("===Bullet===")]
     // Stat
     [SerializeField] protected float moveSpeed;
     [SerializeField] protected int damage;
-    [SerializeField] protected float despawnTime;
-    [SerializeField] protected float despawnDistance;
     [SerializeField] protected List<DamagableType> damgableTypes;
 
     // Movement
@@ -30,8 +33,12 @@ public abstract class Bullet : BaseObj, HpSender
     [SerializeField] protected Cooldown despawnByTimeCD;
     [SerializeField] protected bool canDespawnByTime;
 
+    // Despawn By Distance
+    [SerializeField] protected Transform gunObj;
+    [SerializeField] protected float despawnDistance;
+    [SerializeField] protected bool canDespawnByDistance;
+
     // Component
-    [SerializeField] protected BulletSO so;
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected CapsuleCollider2D bodyCollider;
 
@@ -47,12 +54,6 @@ public abstract class Bullet : BaseObj, HpSender
     {
         get => damage;
         set => damage = value;
-    }
-
-    public float DespawnTime
-    { 
-        get => despawnTime;
-        set => despawnTime = value;
     }
 
     public List<DamagableType> DamagableTypes
@@ -123,6 +124,11 @@ public abstract class Bullet : BaseObj, HpSender
         this.LoadComponent(ref this.bodyCollider, transform, "LoadBodyCollider()");
     }
 
+    protected virtual void OnEnable()
+    {
+        this.Respawn();
+    }
+
     protected virtual void FixedUpdate()
     {
         this.DespawnByTime();
@@ -161,32 +167,86 @@ public abstract class Bullet : BaseObj, HpSender
         DespawnUtil.Instance.DespawnByTime(this.despawnByTimeCD, transform, BulletSpawner.Instance);
     }
 
-    protected virtual void DefaultDespawnByTime()
+    //======================================Despawn By Distance====================================
+    protected virtual void DespawnByDistance()
     {
-        this.canDespawnByTime = false;
-        this.despawnByTimeCD = new Cooldown(this.despawnTime, Time.fixedDeltaTime);
+        if (!this.canDespawnByDistance) return;
+        DespawnUtil.Instance.DespawnByDistance(transform.position, this.gunObj.position, transform, BulletSpawner.Instance);
+    }
+
+    public virtual void SetGunObj(Transform obj) 
+    {
+        this.gunObj = obj;
+    }
+
+    //===========================================Other============================================
+    // Respawn
+    protected virtual void Respawn()
+    {
+        this.despawnByTimeCD.ResetStatus();
+    }
+    
+    // Default
+    protected virtual void DefaultBulletStat(BulletSO bulletSO)
+    {
+        this.moveSpeed = bulletSO.MoveSpeed;
+        this.damage = bulletSO.Damage;
+        this.damgableTypes = bulletSO.DamagableTypes;
+    }
+
+    protected virtual void DefaultPoisonEff(BulletSO bulletSO)
+    {
+        this.poisonEffDuration = bulletSO.PoisonEffDuration;
+        this.poisonDamage = bulletSO.PoisonDamage;
+    }
+
+    protected virtual void DefaultFireEff(BulletSO bulletSO)
+    {
+        this.fireEffDuration = bulletSO.FireEffDuration;
+        this.fireDamage = bulletSO.FireDamage;
+    }
+
+    protected virtual void DefaultDespawnByTime(BulletSO bulletSO)
+    {
+        this.canDespawnByTime = true;
+        this.despawnByTimeCD = new Cooldown(bulletSO.DespawnTime, Time.fixedDeltaTime);
+    }
+
+    protected virtual void DefaultDespawnByDistance(BulletSO bulletSO)
+    {
+        this.canDespawnByDistance = true;
+        this.despawnDistance = bulletSO.DespawnDistance;
+    }
+
+    protected virtual void DefaultMovement(BulletSO bulletSO)
+    {
+        this.canMove = false;
+    }
+
+    protected virtual void DefaultComponent()
+    {
+        this.rb.isKinematic = true;
+        this.bodyCollider.isTrigger = true;
     }
 
     //==========================================Override==========================================
     protected override void DefaultStat()
     {
-        if (this.so == null)
+        base.DefaultStat();
+        BulletSO bulletSO = (BulletSO)this.so;
+        if (bulletSO == null)
         {
             Debug.LogError("SO is null", transform.gameObject);
             return;
         }
 
-        // Obj
-        this.objName = this.so.ObjName;
-        
-        // Stat
-        this.moveSpeed = this.so.MoveSpeed;
-        this.damage = this.so.Damage;
-        this.despawnTime = this.so.DespawnTime;
-        this.despawnDistance = this.so.DespawnDistance;
-
-        this.DefaultMovement();
-        this.DefaultDespawnByTime();
+        this.DefaultBulletStat(bulletSO);
+        this.DefaultPoisonEff(bulletSO);
+        this.DefaultFireEff(bulletSO);
+        this.DefaultDespawnByTime(bulletSO);
+        this.DefaultDespawnByDistance(bulletSO);
+        this.DefaultMovement(bulletSO);
+        this.DefaultComponent();
     }
 
     //==========================================Abstract==========================================

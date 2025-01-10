@@ -12,33 +12,34 @@ public abstract class Bullet : BaseObj, HpSender
     [Header("//============================================================================================")]
     [Space(25)]
     [Header("===Bullet===")]
-    // Stat
+    [Header("// Stat")]
     [SerializeField] protected float moveSpeed;
     [SerializeField] protected int damage;
     [SerializeField] protected List<DamagableType> damgableTypes;
 
-    // Movement
+    [Header("// Movement")]
     [SerializeField] protected bool canMove;
 
-    // Poison Effect
+    [Header("// Fire Effect")]
     [SerializeField] protected float fireEffDuration;
     [SerializeField] protected int fireDamage;
 
-    // Fire Effect
+    [Header("// Poison Effect")]
     [SerializeField] protected float poisonEffDuration;
     [SerializeField] protected int poisonDamage;
 
 
-    // Despawn By Time
+    [Header("// Despawn By Time")]
     [SerializeField] protected Cooldown despawnByTimeCD;
     [SerializeField] protected bool canDespawnByTime;
 
-    // Despawn By Distance
+    [Header("// Despawn By Distance")]
     [SerializeField] protected Transform gunObj;
     [SerializeField] protected float despawnDistance;
+    [SerializeField] protected float currDistance;
     [SerializeField] protected bool canDespawnByDistance;
 
-    // Component
+    [Header("// Component")]
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected CapsuleCollider2D bodyCollider;
 
@@ -132,6 +133,7 @@ public abstract class Bullet : BaseObj, HpSender
     protected virtual void FixedUpdate()
     {
         this.DespawnByTime();
+        this.DespawnByDistance();
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
@@ -170,8 +172,8 @@ public abstract class Bullet : BaseObj, HpSender
     //======================================Despawn By Distance====================================
     protected virtual void DespawnByDistance()
     {
-        if (!this.canDespawnByDistance) return;
-        DespawnUtil.Instance.DespawnByDistance(transform.position, this.gunObj.position, transform, BulletSpawner.Instance);
+        if (!this.canDespawnByDistance || this.gunObj == null) return;
+        this.currDistance = DespawnUtil.Instance.DespawnByDistance(transform.position, this.gunObj.position, this.despawnDistance, transform, BulletSpawner.Instance);
     }
 
     public virtual void SetGunObj(Transform obj) 
@@ -183,6 +185,7 @@ public abstract class Bullet : BaseObj, HpSender
     // Respawn
     protected virtual void Respawn()
     {
+        this.canMove = true;
         this.despawnByTimeCD.ResetStatus();
     }
     

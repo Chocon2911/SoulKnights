@@ -12,6 +12,7 @@ public class M4 : Weapon, IAttackable
     [SerializeField] private float fireRate;
     [SerializeField] private Transform bullet;
     [SerializeField] private Skill skill;
+    [SerializeField] private bool canSkillCD;
 
     //==========================================Get Set===========================================
     public float FireRate
@@ -27,17 +28,43 @@ public class M4 : Weapon, IAttackable
         base.LoadComponents();
     }
 
+    private void OnEnable()
+    {
+        this.canSkillCD = true;
+    }
+
+    private void FixedUpdate()
+    {
+        this.SkillCoolingDown();
+    }
+
     //========================================IAttackable=========================================
     public void Attack(Player player, int state)
     {
-        if (state <= 0 || !this.skill.CanUseSkill(player)) return; 
+        if (state <= 0 || !this.skill.CanUseSkill(player) || !this.skill.SkillCD.IsReady) return; 
         
         Transform newBullet = SkillUtil.Instance.Shoot(bullet, transform.position, transform.rotation);
         if (newBullet == null) return;
         
+        Bullet bulletScript = newBullet.GetComponent<Bullet>();
+        if (bullet == null)
+        {
+            Debug.LogError("Bullet is null", transform.gameObject);
+            return;
+        }
+
+        bulletScript.SetGunObj(transform);
         newBullet.gameObject.SetActive(true);
         SkillUtil.Instance.ConsumeHp(player, this.skill);
         SkillUtil.Instance.ConsumeMana(player, this.skill);
+        this.skill.SkillCD.ResetStatus();
+    }
+
+    //===========================================Skill============================================
+    private void SkillCoolingDown()
+    {
+        if (!this.canSkillCD || this.skill.SkillCD.IsReady) return;
+        this.skill.SkillCD.CoolingDown();
     }
 
     //==========================================Override==========================================

@@ -10,6 +10,7 @@ public abstract class Weapon : BaseObj
     [Space(25)]
     [Header("===Weapon===")]
     [SerializeField] protected float holdRad;
+    [SerializeField] protected bool isLeft;
 
     //==========================================Get Set===========================================
     public float HoldRad
@@ -30,6 +31,17 @@ public abstract class Weapon : BaseObj
     {
         Vector2 pos = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)) * this.holdRad;
         transform.localPosition = pos;
+
+        float imageYAngle = this.image.transform.localEulerAngles.y;
+        float imageZAngle = this.image.transform.localEulerAngles.z;
+        if ((Mathf.Cos(angle * Mathf.Deg2Rad) < 0 && !this.isLeft) 
+            || (Mathf.Cos(angle * Mathf.Deg2Rad) > 0 && this.isLeft))
+        {
+            this.image.transform.localRotation = Quaternion.Euler(180, imageYAngle, imageZAngle);
+            if (!this.isLeft) this.isLeft = true;
+            else if (this.isLeft) this.isLeft = false;
+        }
+
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 

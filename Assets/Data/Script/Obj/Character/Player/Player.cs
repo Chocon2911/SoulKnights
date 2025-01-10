@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver, FireEffReceiver
 {
+    protected enum PlayerState
+    {
+        IDLE,
+        MOVE,
+        DASH
+    }
+
     //==========================================Variable==========================================
     [Space(25)]
     [Header("//============================================================================================")]
@@ -16,6 +23,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     [SerializeField] protected int maxAmor;
     [SerializeField] protected int amor;
     [SerializeField] protected DamagableType factionType;
+    [SerializeField] protected PlayerState playerState;
 
     [Header("// Dash Skill")]    
     [SerializeField] protected Skill dashSkill;
@@ -56,23 +64,28 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.DefaultStat();
     }
 
-    protected virtual void Start()
+    protected virtual void OnEnable()
     {
         this.Revive();
+        this.canMove = true;
+        this.canDashCD = true;
+        this.canRegenAmor = true;
+        this.currWeaponSlot = 1;
     }
 
     protected virtual void Update()
     {
-        this.DashUpdate();
+        this.CheckDashFixedUpdate();
     }
 
     protected virtual void FixedUpdate()
     {
         this.Moving();
-        this.DashFUpdate();
+        this.CheckDashUpdate();
         this.WeaponHolding();
         this.WeaponHandling();
         this.AmorRegenerating();
+        this.AnimationHandling();
     }
 
 
@@ -82,8 +95,34 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     //============================================================================================
     protected void Moving()
     {
-        if (!this.canMove || !this.canDash) return;
+        this.rb.velocity = Vector2.zero;
+        this.playerState = PlayerState.IDLE;
+        if (this.canDash) this.Dashing();
+        else if (this.canMove) this.MoveByKeyboard();
+    }
+
+    protected virtual void MoveByKeyboard()
+    {
+        Vector2 moveDir = InputManager.Instance.MoveDir.normalized;
+        if (moveDir == Vector2.zero) return;
+
+        this.playerState = PlayerState.MOVE;
+        if (moveDir.x < 0) this.image.flipX = true;
+        else this.image.flipX = false;
+
         MovementUtil.Instance.MoveByKeyboard(this.rb, this.moveSpeed);
+    }
+
+
+
+    //============================================================================================
+    //=========================================Animation==========================================
+    //============================================================================================
+    protected virtual void AnimationHandling()
+    {
+        if (this.playerState == PlayerState.IDLE) this.myAnimator.SetInteger("State", 0);
+        else if (this.playerState == PlayerState.MOVE) this.myAnimator.SetInteger("State", 1);
+        else if (this.playerState == PlayerState.DASH) this.myAnimator.SetInteger("State", 2);
     }
 
 
@@ -94,28 +133,25 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
 
     //============================================Dash============================================
     //===Handling===
-    protected virtual void DashFUpdate()
+    protected virtual void CheckDashUpdate()
     {
         // Do Dash
-        if (InputManager.Instance.ShiftState == 2 && this.dashSkill.SkillCD.IsReady) this.ActivateDash();
+        if (InputManager.Instance.SpaceState >= 1 && this.dashSkill.SkillCD.IsReady) this.ActivateDash();
     }
 
-    protected virtual void DashUpdate()
+    protected virtual void CheckDashFixedUpdate()
     {
-        // On Dashing
-        if (this.canDash) this.Dashing();
-
         // On Skill Cooling down
-        else if (this.canDashCD) this.DashRecharging();
+        if (this.canDashCD) this.DashRecharging();
 
         // Dash Finish
-        else if (this.dashCD.IsReady) this.ActivateDashRecharge();
+        if (this.dashCD.IsReady) this.ActivateDashRecharge();
     }
 
     //===Performing===
     protected virtual void ActivateDash()
     {
-        this.dashDir = InputManager.Instance.MoveDir;
+        this.dashDir = InputManager.Instance.MoveDir.normalized;
         this.canDash = true;
         this.canDashCD = false;
         this.dashSkill.SkillCD.ResetStatus();
@@ -255,6 +291,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.amor = this.maxAmor;
     }
 
+
+
+    //============================================================================================
+    //==========================================Default===========================================
+    //============================================================================================
     protected virtual void DefaultPlayerStat(PlayerSO playerSO)
     {
         this.maxMana = playerSO.MaxMana;
@@ -268,11 +309,13 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.canDashCD = true;
         this.dashSpeed = playerSO.DashSpeed;
 
-        Cooldown dashSkillCD = new Cooldown(playerSO.DashTime, Time.fixedDeltaTime);
+        Cooldown dashSkillCD = new Cooldown(playerSO.DashSkillRT, Time.fixedDeltaTime);
         this.dashSkill = new Skill(playerSO.DashSkillMC, playerSO.DashSkillHC, dashSkillCD);
 
+        this.dashCD = new Cooldown(playerSO.DashTime, Time.fixedDeltaTime);
         this.dashCD.OnCD = () =>
         {
+            this.rb.velocity = Vector2.zero;
             MovementUtil.Instance.Move(this.rb, dashSpeed, this.dashDir);
         };
     }

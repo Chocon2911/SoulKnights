@@ -21,6 +21,7 @@ public class NormalBullet : Bullet
     private void Move()
     {
         if (!this.canMove) return;
+        this.rb.velocity = Vector2.zero;
         MovementUtil.Instance.MoveForward(this.rb, this.moveSpeed);   
     }
 

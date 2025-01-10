@@ -13,21 +13,20 @@ MonoBehaviour:
   m_Name: Player
   m_EditorClassIdentifier: 
   id: 100
-  objName: 100
+  objName: Knight
   maxHp: 100
-  moveSpeed: 100
+  moveSpeed: 5
   maxMana: 100
   maxAmor: 100
-  dashSkillMC: 100
-  dashSkillHC: 100
-  dashSkillRT: 100
-  dashTime: 100
-  dashSpeed: 100
-  maxWeaponSlot: 100
-  amorRegenTime: 100
-  characterSkillMC: 100
-  characterSkillHC: 100
-  characterSkillRT: 100
-  characterSkillExistDuration: 100
-  weaponAtkDelay: 100
-  chosenWeaponSlot: 100
+  dashSkillMC: 0
+  dashSkillHC: 0
+  dashSkillRT: 0.25
+  dashTime: 0.25
+  dashSpeed: 15
+  maxWeaponSlot: 2
+  amorRegenTime: 5
+  characterSkillMC: 0
+  characterSkillHC: 0
+  characterSkillRT: 15
+  characterSkillExistDuration: 5
+  weaponAtkDelay: 0.1

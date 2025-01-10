@@ -9,13 +9,13 @@ public class Knight : Player
     [Space(25)]
     [Header("===Knight===")]
     [Header("// Character Skill")]
-    [SerializeField] private Weapon leftWeapon; 
-    [SerializeField] private Weapon rightWeapon;
+    [SerializeField] private Transform leftArm;
+    [SerializeField] private Weapon leftWeapon;
     [SerializeField] private Skill characterSkill;
     [SerializeField] private Cooldown characterSkillExistCD;
     [SerializeField] private float weaponAtkDelay;
     [SerializeField] private int chosenWeaponSlot;
-    [SerializeField] private bool canUseCS;
+    [SerializeField] private bool canUseCharacterSkill;
     [SerializeField] private bool canCharacterSkillCD;
 
     //===========================================Unity============================================
@@ -23,43 +23,91 @@ public class Knight : Player
     {
         this.LoadSO(ref this.so, "SO/Character/Player/Knight/Player");
         base.LoadComponents();
+        this.LoadComponent(ref this.leftArm, transform.Find("CharacterSkill").Find("LeftArm"), "LoadLeftArm()");
+    }
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        this.CharacterSkillHandlingFU();
+        this.CharacacterSkillWeaponHandling();
+        this.CharacterSkillWeaponHolding();
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        this.CharacterSkillHandlingU();
     }
 
     //======================================Character Skill=======================================
-    private void UseCharacterSkill()
+    // =====Skill=====
+    // Fixed Update
+    private void CharacterSkillHandlingFU()
     {
-        if (!this.characterSkill.SkillCD.IsReady) return;
-        this.canCharacterSkillCD = false;
-        this.canUseCS = true;
-        // Load Right Weapon
-        // Load Left Weapon
+        if (this.canUseCharacterSkill) this.CharacterSkillPerforming();
+        if (this.canCharacterSkillCD) this.CharacterSkillRecharging();
+        if (this.characterSkillExistCD.IsReady) this.FinishCharacterSkill();
     }
 
+    // Update
+    private void CharacterSkillHandlingU()
+    {
+        if (InputManager.Instance.ShiftState >= 1 && this.characterSkill.SkillCD.IsReady) this.UseCharacterSkill();
+    }
+
+    // Activate Character Skill
+    private void UseCharacterSkill()
+    {
+        this.CloneCurrWeapon();
+        this.canCharacterSkillCD = false;
+        this.canUseCharacterSkill = true;
+        this.characterSkill.SkillCD.ResetStatus();
+    }
+
+    // Character Skill Mode end
     private void FinishCharacterSkill()
     {
         this.canCharacterSkillCD = true;
-        this.canUseCS = false;
+        this.canUseCharacterSkill = false;
+        this.characterSkillExistCD.ResetStatus();
+        this.leftWeapon.transform.gameObject.SetActive(false);
     }
     
+    // Recharge Character Skill
     private void CharacterSkillRecharging()
     {
-        if (!this.canCharacterSkillCD || this.characterSkill.SkillCD.IsReady) return;
         this.characterSkill.SkillCD.CoolingDown();
     }
 
-    private void CharacterSkillHandling()
+    // During Character Skill mode on
+    private void CharacterSkillPerforming()
     {
-        if (!this.canUseCS) return;
         this.characterSkillExistCD.CoolingDown();
     }
 
-    private void WeaponHandlingCS()
+    // Create Clond of Main Weapon
+    private void CloneCurrWeapon()
     {
-        if(!this.canUseCS) return;
+        if (this.leftWeapon != null) Destroy(this.leftWeapon.gameObject);
+
+        this.chosenWeaponSlot = this.currWeaponSlot;
+        Transform mainWeapon = this.weapons[this.chosenWeaponSlot - 1].transform;
         
+        Transform tempLeftWeapon = Instantiate(mainWeapon, mainWeapon.position, mainWeapon.rotation, transform.Find("CharacterSkill"));
+        tempLeftWeapon.name = "LeftWeapon";
+
+        this.LoadComponent(ref this.leftWeapon, tempLeftWeapon, "LoadLeftWeapon()");
+    }
+
+    // =====Weapon=====
+    // Handle Weapons of Character Skill
+    private void CharacacterSkillWeaponHandling()
+    {
+        if(!this.canUseCharacterSkill) return;
         else if (this.chosenWeaponSlot != this.currWeaponSlot)
         {
-            this.canUseCS = false;
+            this.canUseCharacterSkill = false;
             return;
         }
 
@@ -67,30 +115,40 @@ public class Knight : Player
 
         {
             IAttackable tempLWeapon = (IAttackable)this.leftWeapon;
-            IAttackable tempRWeapon = (IAttackable)this.rightWeapon;
 
             int leftClickState = InputManager.Instance.LeftClickState;
             tempLWeapon.Attack(this, leftClickState);
-            StartCoroutine(AttackAfterDelay(tempRWeapon, leftClickState));
+            StartCoroutine(AttackAfterDelay(tempLWeapon, leftClickState));
         }
 
-        if(this.leftWeapon is IAttackable)
+        if(this.leftWeapon is ISecondaryAttack)
         {
             ISecondaryAttack tempLWeapon = (ISecondaryAttack)this.leftWeapon;
-            ISecondaryAttack tempRWeapon = (ISecondaryAttack)this.rightWeapon;
 
             int rightClickState = InputManager.Instance.RightClickState;
             tempLWeapon.SecondaryAttack(this, rightClickState);
-            StartCoroutine(SecondaryAttackAfterDelay(tempRWeapon, rightClickState));
+            StartCoroutine(SecondaryAttackAfterDelay(tempLWeapon, rightClickState));
         }
     }
 
+    private void CharacterSkillWeaponHolding()
+    {
+        if (!this.canUseCharacterSkill) return;
+
+        Vector2 distance = InputManager.Instance.MousePos - (Vector2)transform.position;
+        float angle = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg;
+
+        this.leftWeapon.HoldingWeapon(this.leftArm, angle);
+    }
+
+    // Second Weapon leftClick attack after a period
     private IEnumerator AttackAfterDelay(IAttackable weapon, int leftClickState)
     {
         yield return new WaitForSeconds(weaponAtkDelay);
         weapon.Attack(this, leftClickState);
     }
 
+    // Second Weapon rightClick attack after a period
     private IEnumerator SecondaryAttackAfterDelay(ISecondaryAttack weapon, int rightClickState)
     {
         yield return new WaitForSeconds(weaponAtkDelay);
@@ -114,8 +172,8 @@ public class Knight : Player
 
         this.characterSkillExistCD = new Cooldown(knightSO.CharacterSkillExistDuration, Time.fixedDeltaTime);
         this.weaponAtkDelay = knightSO.WeaponAtkDelay;
-        this.chosenWeaponSlot = knightSO.MaxWeaponSlot;
-        this.canUseCS = false;
+        this.chosenWeaponSlot = this.currWeaponSlot;
+        this.canUseCharacterSkill = false;
         this.canCharacterSkillCD = true;
     }
 }

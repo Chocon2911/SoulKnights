@@ -77,19 +77,31 @@ public class InputManager : HuyMonoBehaviour
     //===========================================Unity============================================
     private void Update()
     {
-        this.handleInput();
+        this.handleInputU();
+    }
+
+    private void FixedUpdate()
+    {
+        this.handleInputFU();
     }
 
     //===========================================Method===========================================
-    private void handleInput()
+    private void handleInputFU()
     {
-        //===Reset===
         this.moveDir = Vector2.zero;
         this.leftClickState = 0;
         this.rightClickState = 0;
         this.shiftState = 0;
         this.spaceState = 0;
 
+        if (Input.GetKey(this.leftMouse)) this.leftClickState = 2;
+        if (Input.GetKey(this.rightMouse)) this.rightClickState = 2;
+        if (Input.GetKey(this.shift)) this.shiftState = 2;
+        if (Input.GetKey(this.space)) this.spaceState = 2;
+    }
+    
+    private void handleInputU()
+    {
         //===Handle===
         //MoveDir
         if (Input.GetKeyDown(this.rightMove) || Input.GetKey(this.rightMove)) this.moveDir.x = 1;

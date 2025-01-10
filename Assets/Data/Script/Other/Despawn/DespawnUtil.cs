@@ -36,9 +36,10 @@ public class DespawnUtil
         if (despawnCD.IsReady) this.Despawn(despawnObj, spawner);
     }
 
-    public void DespawnByDistance(Vector2 mainPos, Vector2 targetPos, Transform despawnObj, Spawner spawner)
+    public float DespawnByDistance(Vector2 mainPos, Vector2 targetPos, float distance, Transform despawnObj, Spawner spawner)
     {
-        if (mainPos.x < targetPos.x && mainPos.y < targetPos.y) return;
-        this.Despawn(despawnObj, spawner);
+        float distanceToTarget = Vector2.Distance(mainPos, targetPos);
+        if (distanceToTarget > distance) this.Despawn(despawnObj, spawner);
+        return distanceToTarget;
     }
 }

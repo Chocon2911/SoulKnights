@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &207572486
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 207572487}
+  m_Layer: 0
+  m_Name: LeftArm
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &207572487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207572486}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.5, y: -0.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1203057735}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &315542225
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,6 +188,7 @@ Transform:
   m_Children:
   - {fileID: 1006326461}
   - {fileID: 586496360}
+  - {fileID: 1203057735}
   m_Father: {fileID: 1883560183}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &315542227
@@ -171,14 +203,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83011b20acf55354e9d280f30b2ae2b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
-  objName: 100
+  id: 100
+  objName: Knight
   so: {fileID: 11400000, guid: a5364a2cb0abcae468e5537826bcf054, type: 2}
   image: {fileID: 1006326463}
   myAnimator: {fileID: 1006326462}
   maxHp: 100
   hp: 0
-  moveSpeed: 100
+  moveSpeed: 5
   canMove: 0
   bodyCollider: {fileID: 315542229}
   rb: {fileID: 315542228}
@@ -187,11 +219,12 @@ MonoBehaviour:
   maxAmor: 100
   amor: 0
   factionType: 0
+  playerState: 0
   dashSkill:
-    manaCost: 100
-    hpCost: 100
+    manaCost: 0
+    hpCost: 0
     skillCD:
-      timeLimit: 100
+      timeLimit: 0.5
       timer: 0
       waitTime: 0.02
       isReady: 0
@@ -201,15 +234,15 @@ MonoBehaviour:
     waitTime: 0
     isReady: 0
   dashDir: {x: 0, y: 0}
-  dashSpeed: 100
+  dashSpeed: 10
   canDash: 0
   canDashCD: 1
   weapons:
   - {fileID: 832571037}
-  maxWeaponSlot: 100
-  currWeaponSlot: 1
+  maxWeaponSlot: 2
+  currWeaponSlot: 0
   amorRegenCD:
-    timeLimit: 100
+    timeLimit: 5
     timer: 0
     waitTime: 0.02
     isReady: 0
@@ -217,21 +250,21 @@ MonoBehaviour:
   leftWeapon: {fileID: 0}
   rightWeapon: {fileID: 0}
   characterSkill:
-    manaCost: 100
-    hpCost: 100
+    manaCost: 0
+    hpCost: 0
     skillCD:
-      timeLimit: 100
+      timeLimit: 15
       timer: 0
       waitTime: 0.02
       isReady: 0
   characterSkillExistCD:
-    timeLimit: 100
+    timeLimit: 5
     timer: 0
     waitTime: 0.02
     isReady: 0
-  weaponAtkDelay: 100
-  chosenWeaponSlot: 100
-  canUseCS: 0
+  weaponAtkDelay: 0.1
+  chosenWeaponSlot: 2
+  canUseCharacterSkill: 0
   canCharacterSkillCD: 1
 --- !u!50 &315542228
 Rigidbody2D:
@@ -733,16 +766,18 @@ MonoBehaviour:
   image: {fileID: 1930365210}
   myAnimator: {fileID: 0}
   holdRad: 0.7
-  fireRate: 10
+  isLeft: 0
+  fireRate: 0.5
   bullet: {fileID: 8971958095379382294, guid: d031a30c1fb503d4f8c17d3ddadd486b, type: 3}
   skill:
     manaCost: 0
     hpCost: 0
     skillCD:
-      timeLimit: 0.1
+      timeLimit: 2
       timer: 0
       waitTime: 0.02
       isReady: 0
+  canSkillCD: 0
 --- !u!1 &843313109
 GameObject:
   m_ObjectHideFlags: 0
@@ -912,6 +947,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1046832829
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1046832830}
+  m_Layer: 0
+  m_Name: RightArm
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1046832830
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046832829}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1203057735}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1178619221
 GameObject:
   m_ObjectHideFlags: 0
@@ -963,6 +1029,39 @@ MonoBehaviour:
   prefabs:
   - {fileID: 2057160314}
   holders: []
+--- !u!1 &1203057734
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1203057735}
+  m_Layer: 0
+  m_Name: CharacterSkill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1203057735
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203057734}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 207572487}
+  - {fileID: 1046832830}
+  m_Father: {fileID: 315542226}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1235393615
 GameObject:
   m_ObjectHideFlags: 0

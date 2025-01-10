@@ -15,5 +15,5 @@ MonoBehaviour:
   id: 
   objName: M4
   holdRad: 0.7
-  fireRate: 10
+  fireRate: 20
   bullet: {fileID: 8971958095379382294, guid: d031a30c1fb503d4f8c17d3ddadd486b, type: 3}

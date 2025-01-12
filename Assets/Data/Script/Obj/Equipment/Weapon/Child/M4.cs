@@ -39,9 +39,11 @@ public class M4 : Weapon, IAttackable
     }
 
     //========================================IAttackable=========================================
-    public void Attack(Player player, int state)
+    public void Attack(HpReceiver hpRecv, ManaReceiver manaRecv, int state)
     {
-        if (state <= 0 || !this.skill.CanUseSkill(player) || !this.skill.SkillCD.IsReady) return; 
+        if (state <= 0 
+            || !this.skill.CanUseSkill(hpRecv.GetCurrHp(), manaRecv.GetCurrMana()) 
+            || !this.skill.SkillCD.IsReady) return;
         
         Transform newBullet = SkillUtil.Instance.Shoot(bullet, transform.position, transform.rotation);
         if (newBullet == null) return;
@@ -53,10 +55,10 @@ public class M4 : Weapon, IAttackable
             return;
         }
 
-        bulletScript.SetGunObj(transform);
+        bulletScript.SetShooter(transform);
         newBullet.gameObject.SetActive(true);
-        SkillUtil.Instance.ConsumeHp(player, this.skill);
-        SkillUtil.Instance.ConsumeMana(player, this.skill);
+        SkillUtil.Instance.ConsumeHp(hpRecv, this.skill);
+        SkillUtil.Instance.ConsumeMana(manaRecv, this.skill);
         this.skill.SkillCD.ResetStatus();
     }
 

@@ -27,6 +27,6 @@ MonoBehaviour:
   amorRegenTime: 5
   characterSkillMC: 0
   characterSkillHC: 0
-  characterSkillRT: 15
+  characterSkillRT: 1
   characterSkillExistDuration: 5
   weaponAtkDelay: 0.1

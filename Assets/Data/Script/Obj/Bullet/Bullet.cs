@@ -34,7 +34,7 @@ public abstract class Bullet : BaseObj, HpSender
     [SerializeField] protected bool canDespawnByTime;
 
     [Header("// Despawn By Distance")]
-    [SerializeField] protected Transform gunObj;
+    [SerializeField] protected Transform shooter;
     [SerializeField] protected float despawnDistance;
     [SerializeField] protected float currDistance;
     [SerializeField] protected bool canDespawnByDistance;
@@ -172,13 +172,14 @@ public abstract class Bullet : BaseObj, HpSender
     //======================================Despawn By Distance====================================
     protected virtual void DespawnByDistance()
     {
-        if (!this.canDespawnByDistance || this.gunObj == null) return;
-        this.currDistance = DespawnUtil.Instance.DespawnByDistance(transform.position, this.gunObj.position, this.despawnDistance, transform, BulletSpawner.Instance);
+        if (!this.canDespawnByDistance || this.shooter == null) return;
+        this.currDistance = DespawnUtil.Instance.DespawnByDistance
+            (transform.position, this.shooter.position, this.despawnDistance, transform, BulletSpawner.Instance);
     }
 
-    public virtual void SetGunObj(Transform obj) 
+    public virtual void SetShooter(Transform obj) 
     {
-        this.gunObj = obj;
+        this.shooter = obj;
     }
 
     //===========================================Other============================================

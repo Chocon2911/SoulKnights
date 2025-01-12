@@ -38,6 +38,12 @@ public class InputManager : HuyMonoBehaviour
     [SerializeField] private int spaceState;
     [SerializeField] private Vector2 mousePos;
 
+    [Header("Support")]
+    [SerializeField] private Cooldown leftClickCD = new Cooldown(0.25f, 0);
+    [SerializeField] private Cooldown rightClickCD = new Cooldown(0.25f, 0);
+    [SerializeField] private Cooldown shiftCD = new Cooldown(0.25f, 0);
+    [SerializeField] private Cooldown spaceCD = new Cooldown(0.25f, 0);
+
     //==========================================Get Set===========================================
     public static InputManager Instance => instance;
 
@@ -75,59 +81,6 @@ public class InputManager : HuyMonoBehaviour
     public Vector2 MousePos => mousePos;
 
     //===========================================Unity============================================
-    private void Update()
-    {
-        this.handleInputU();
-    }
-
-    private void FixedUpdate()
-    {
-        this.handleInputFU();
-    }
-
-    //===========================================Method===========================================
-    private void handleInputFU()
-    {
-        this.moveDir = Vector2.zero;
-        this.leftClickState = 0;
-        this.rightClickState = 0;
-        this.shiftState = 0;
-        this.spaceState = 0;
-
-        if (Input.GetKey(this.leftMouse)) this.leftClickState = 2;
-        if (Input.GetKey(this.rightMouse)) this.rightClickState = 2;
-        if (Input.GetKey(this.shift)) this.shiftState = 2;
-        if (Input.GetKey(this.space)) this.spaceState = 2;
-    }
-    
-    private void handleInputU()
-    {
-        //===Handle===
-        //MoveDir
-        if (Input.GetKeyDown(this.rightMove) || Input.GetKey(this.rightMove)) this.moveDir.x = 1;
-        else if (Input.GetKeyDown(this.leftMove) || Input.GetKey(this.leftMove)) this.moveDir.x = -1;
-
-        if (Input.GetKeyDown(this.backMove) || Input.GetKey(this.backMove)) this.moveDir.y = -1;
-        else if (Input.GetKeyDown(this.frontMove) || Input.GetKey(this.frontMove)) this.moveDir.y = 1;
-
-        //State
-        if (Input.GetKeyDown(this.leftMouse)) this.leftClickState = 1;
-        else if (Input.GetKey(this.leftMouse)) this.leftClickState = 2;
-
-        if (Input.GetKeyDown(this.rightMouse)) this.rightClickState = 1;
-        else if (Input.GetKey(this.rightMouse)) this.rightClickState = 2;
-        
-        if (Input.GetKeyDown(this.shift)) this.shiftState = 1;
-        else if (Input.GetKey(this.shift)) this.shiftState = 2;
-
-        if (Input.GetKeyDown(this.space)) this.spaceState = 1;
-        else if (Input.GetKey(this.space)) this.spaceState = 2;
-
-        // MousePos
-        this.mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    }
-
-    //===========================================Unity============================================
     protected override void Awake()
     {
         if (instance != null)
@@ -138,5 +91,81 @@ public class InputManager : HuyMonoBehaviour
 
         instance = this;
         base.Awake();
+    }
+
+    private void Update()
+    {
+        this.handleInput();
+    }
+
+    //===========================================Method===========================================
+    private void handleInput()
+    {
+        //===Reset===
+        this.moveDir = Vector2.zero;
+        this.leftClickState = 0;
+        this.rightClickState = 0;
+        this.shiftState = 0;
+        this.spaceState = 0;
+
+        //===Handle===
+        //MoveDir
+        if (Input.GetKeyDown(this.rightMove) || Input.GetKey(this.rightMove)) this.moveDir.x = 1;
+        else if (Input.GetKeyDown(this.leftMove) || Input.GetKey(this.leftMove)) this.moveDir.x = -1;
+
+        if (Input.GetKeyDown(this.backMove) || Input.GetKey(this.backMove)) this.moveDir.y = -1;
+        else if (Input.GetKeyDown(this.frontMove) || Input.GetKey(this.frontMove)) this.moveDir.y = 1;
+
+        // LeftMouse State
+        if (Input.GetKey(this.leftMouse))
+        {
+            if (this.leftClickCD.IsReady) this.leftClickState = 2;
+            else { this.leftClickCD.WaitTime = Time.deltaTime; this.leftClickCD.CoolingDown(); }
+        }
+        else if (Input.GetKeyUp(this.leftMouse))
+        {
+            if (!this.leftClickCD.IsReady) this.leftClickState = 1;
+            this.leftClickCD.ResetStatus();
+        }
+
+        // RightMouse State
+        if (Input.GetKey(this.rightMouse))
+        {
+            if (this.rightClickCD.IsReady) this.rightClickState = 2;
+            else { this.rightClickCD.WaitTime = Time.deltaTime; this.rightClickCD.CoolingDown(); }
+        }
+        
+        else if (Input.GetKeyUp(this.rightMouse))
+        {
+            if (!this.rightClickCD.IsReady) this.rightClickState = 1;
+            this.rightClickCD.ResetStatus();
+        }
+
+        // Shift State
+        if (Input.GetKey(this.shift))
+        {
+            if (this.shiftCD.IsReady) this.shiftState = 2;
+            else { this.shiftCD.WaitTime = Time.deltaTime; this.shiftCD.CoolingDown(); }
+        }
+        else if (Input.GetKeyUp(this.shift))
+        {
+            if (!this.shiftCD.IsReady) this.shiftState = 1;
+            this.shiftCD.ResetStatus();
+        }
+
+        // Space State
+        if (Input.GetKey(this.space))
+        {
+            if (this.spaceCD.IsReady) this.spaceState = 2;
+            else { this.spaceCD.WaitTime = Time.deltaTime; this.spaceCD.CoolingDown(); }
+        }
+        else if (Input.GetKeyUp(this.space))
+        {
+            if (!this.spaceCD.IsReady) this.spaceState = 1;
+            this.spaceCD.ResetStatus();
+        }
+
+        // MousePos
+        this.mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 }

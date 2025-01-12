@@ -136,7 +136,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     protected virtual void CheckDashUpdate()
     {
         // Do Dash
-        if (InputManager.Instance.SpaceState >= 1 && this.dashSkill.SkillCD.IsReady) this.ActivateDash();
+        if (InputManager.Instance.SpaceState == 1 && this.dashSkill.SkillCD.IsReady) this.ActivateDash();
     }
 
     protected virtual void CheckDashFixedUpdate()
@@ -187,7 +187,8 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
 
     protected virtual void WeaponHolding()
     {
-        if (this.weapons.Count < this.currWeaponSlot || this.weapons[this.currWeaponSlot - 1] == null) return;
+        if (this.weapons.Count < this.currWeaponSlot 
+            || this.weapons[this.currWeaponSlot - 1] == null) return;
 
         Vector2 distance = InputManager.Instance.MousePos - (Vector2)transform.position;
         float angle = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg;
@@ -201,13 +202,13 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         if (this.weapons[this.currWeaponSlot - 1] is IAttackable)
         {
             IAttackable firstAtk = (IAttackable)this.weapons[this.currWeaponSlot - 1];
-            firstAtk.Attack(this, InputManager.Instance.LeftClickState);
+            firstAtk.Attack(this, this, InputManager.Instance.LeftClickState);
         }
 
         if (this.weapons[this.currWeaponSlot - 1] is ISecondaryAttack)
         {
             ISecondaryAttack secondaryAtk = (ISecondaryAttack)this.weapons[this.currWeaponSlot - 1];
-            secondaryAtk.SecondaryAttack(this, InputManager.Instance.RightClickState);
+            secondaryAtk.SecondaryAttack(this, this, InputManager.Instance.RightClickState);
         }
     }
 

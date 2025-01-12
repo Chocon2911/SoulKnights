@@ -224,17 +224,17 @@ MonoBehaviour:
     manaCost: 0
     hpCost: 0
     skillCD:
-      timeLimit: 0.5
+      timeLimit: 0.25
       timer: 0
       waitTime: 0.02
       isReady: 0
   dashCD:
-    timeLimit: 0
+    timeLimit: 0.25
     timer: 0
-    waitTime: 0
+    waitTime: 0.02
     isReady: 0
   dashDir: {x: 0, y: 0}
-  dashSpeed: 10
+  dashSpeed: 15
   canDash: 0
   canDashCD: 1
   weapons:
@@ -247,8 +247,8 @@ MonoBehaviour:
     waitTime: 0.02
     isReady: 0
   canRegenAmor: 0
+  leftArm: {fileID: 207572487}
   leftWeapon: {fileID: 0}
-  rightWeapon: {fileID: 0}
   characterSkill:
     manaCost: 0
     hpCost: 0
@@ -263,7 +263,7 @@ MonoBehaviour:
     waitTime: 0.02
     isReady: 0
   weaponAtkDelay: 0.1
-  chosenWeaponSlot: 2
+  chosenWeaponSlot: 0
   canUseCharacterSkill: 0
   canCharacterSkillCD: 1
 --- !u!50 &315542228
@@ -947,37 +947,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &1046832829
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1046832830}
-  m_Layer: 0
-  m_Name: RightArm
-  m_TagString: Untagged
-  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1046832830
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1046832829}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1203057735}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1178619221
 GameObject:
   m_ObjectHideFlags: 0
@@ -1059,7 +1028,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 207572487}
-  - {fileID: 1046832830}
   m_Father: {fileID: 315542226}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1235393615
@@ -1315,6 +1283,26 @@ MonoBehaviour:
   shiftState: 0
   spaceState: 0
   mousePos: {x: 0, y: 0}
+  leftClickCD:
+    timeLimit: 0.2
+    timer: 0
+    waitTime: 0
+    isReady: 0
+  rightClickCD:
+    timeLimit: 0.2
+    timer: 0
+    waitTime: 0
+    isReady: 0
+  shiftCD:
+    timeLimit: 0.2
+    timer: 0
+    waitTime: 0
+    isReady: 0
+  spaceCD:
+    timeLimit: 0.2
+    timer: 0
+    waitTime: 0
+    isReady: 0
 --- !u!1 &1883560182
 GameObject:
   m_ObjectHideFlags: 0

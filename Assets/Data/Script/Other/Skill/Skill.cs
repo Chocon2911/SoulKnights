@@ -7,9 +7,9 @@ using System;
 public class Skill
 {
     //==========================================Variable==========================================
-    [SerializeField] private int manaCost;
-    [SerializeField] private int hpCost;
-    [SerializeField] private Cooldown skillCD;
+    [SerializeField] protected int manaCost;
+    [SerializeField] protected int hpCost;
+    [SerializeField] protected Cooldown skillCD;
 
     //==========================================Get Set===========================================
     public int ManaCost
@@ -39,9 +39,9 @@ public class Skill
     }
 
     //===========================================Method===========================================
-    public bool CanUseSkill(Player player)
+    public bool CanUseSkill(int hp, int mana)
     {
-        if (player.Mana < this.manaCost || player.Hp <= this.hpCost) { Debug.Log("Hello"); return false; }
+        if (mana < this.manaCost || hp <= this.hpCost) { Debug.Log("Hello"); return false; }
         return true;
     }
 }

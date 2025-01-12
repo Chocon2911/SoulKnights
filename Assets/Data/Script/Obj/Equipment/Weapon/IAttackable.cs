@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IAttackable
 {
-    public void Attack(Player player, int state);
+    public void Attack(HpReceiver hpRecv, ManaReceiver manaRecv, int state);
 }

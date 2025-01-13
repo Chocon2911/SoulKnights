@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class DualWieldSkill : Skill
 {
     //==========================================Variable==========================================
@@ -14,6 +16,8 @@ public class DualWieldSkill : Skill
     [SerializeField] private float weaponAtkDelay;
     [SerializeField] private bool isUsingSkill;
     [SerializeField] private bool isRechargingSkill;
+    [SerializeField] private bool hasfirstAttackDone;
+    [SerializeField] private bool hasSecondAttackDone;
 
     //==========================================Get Set===========================================
     public Cooldown SkillExistCD
@@ -33,8 +37,8 @@ public class DualWieldSkill : Skill
 
     //========================================Constructor=========================================
     public DualWieldSkill(int manaCost, int hpCost, Cooldown skillCD, Transform leftWeaponHolder, 
-        Transform leftArm, Weapon mainWeapon, Cooldown characterSkillExistCD, float weaponAtkDelay) 
-        : base(manaCost, hpCost, skillCD)
+        Transform leftArm, Weapon mainWeapon, Cooldown characterSkillExistCD, float weaponAtkDelay) : 
+        base(manaCost, hpCost, skillCD)
     {
         this.leftWeaponHolder = leftWeaponHolder;
         this.leftArm = leftArm;
@@ -45,12 +49,27 @@ public class DualWieldSkill : Skill
         this.isRechargingSkill = false;
     }
 
+    public DualWieldSkill(Transform leftWeaponHolder, Transform leftArm, Weapon mainWeapon, 
+        DualWieldSkillSO so, float waitTime) : 
+        base(so.ManaCost, so.HpCost, new Cooldown(so.SkillRechargeTime, waitTime))
+    {
+        
+        this.leftWeaponHolder = leftWeaponHolder;
+        this.leftArm = leftArm;
+        this.mainWeapon = mainWeapon;
+        this.skillExistCD = new Cooldown(so.SkillExistTime, waitTime);
+        this.weaponAtkDelay = so.WeaponAtkDelay;
+        this.isUsingSkill = false;
+        this.isRechargingSkill = false;
+    }
+
     //======================================Character Skill=======================================
     // Activate Character Skill
-    public void UseDualWield()
+    public void UseDualWield(Weapon mainWeapon)
     {
         if (!this.skillCD.IsReady) return;
 
+        this.mainWeapon = mainWeapon;
         this.CloneCurrWeapon();
         this.isRechargingSkill = false;
         this.isUsingSkill = true;
@@ -65,7 +84,10 @@ public class DualWieldSkill : Skill
         this.isRechargingSkill = true;
         this.isUsingSkill = false;
         this.skillExistCD.ResetStatus();
-        Object.Destroy(this.leftWeapon.transform.gameObject);
+
+        this.leftWeapon.StopAllCoroutines();
+        UnityEngine.Object.Destroy(this.leftWeapon.transform.gameObject);
+        this.leftWeapon = null;
     }
     
     // Recharge Character Skill
@@ -85,15 +107,11 @@ public class DualWieldSkill : Skill
     // Create Clond of Main Weapon
     private void CloneCurrWeapon()
     {
-        Transform mainWeaponObj = this.mainWeapon.transform;
-        Transform tempLeftWeapon = Object.Instantiate
-        (
-            mainWeaponObj, 
-            mainWeaponObj.position, 
-            mainWeaponObj.rotation, 
-            this.leftWeaponHolder
-        );
+        if (this.leftWeapon != null) UnityEngine.Object.Destroy(this.leftWeapon.transform.gameObject);
 
+        Transform mainWeaponObj = this.mainWeapon.transform;
+        Transform tempLeftWeapon = UnityEngine.Object.Instantiate(mainWeaponObj, mainWeaponObj.position, 
+            mainWeaponObj.rotation, this.leftWeaponHolder);
         tempLeftWeapon.name = "LeftWeapon";
         this.leftWeapon = this.leftWeaponHolder.Find("LeftWeapon").GetComponent<Weapon>();
     }
@@ -101,6 +119,8 @@ public class DualWieldSkill : Skill
     //===========================================Weapon===========================================
     public void WeaponHandling(HpReceiver hpRecv, ManaReceiver manaRecv, int leftClickState, int rightClickState)
     {
+        if (this.skillExistCD.IsReady) return;
+
         if (this.leftWeapon is IAttackable)
         {
             IAttackable tempLWeapon = (IAttackable)this.leftWeapon;
@@ -124,6 +144,7 @@ public class DualWieldSkill : Skill
 
     public void WeaponHolding(float angle)
     {
+        if (!this.isUsingSkill) return;
         this.leftWeapon.HoldingWeapon(this.leftArm, angle);
     }
 

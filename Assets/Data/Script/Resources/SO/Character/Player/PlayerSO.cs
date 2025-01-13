@@ -12,18 +12,13 @@ public abstract class PlayerSO : CharacterSO
     [SerializeField] protected int maxAmor;
 
     // Dash Skill
-    [SerializeField] protected int dashSkillMC; // Dash Skill Mana Cost
-    [SerializeField] protected int dashSkillHC; // Dash Skill Hp Cost
-    [SerializeField] protected float dashSkillRT; // Dash Skill Recharge Time
-    [SerializeField] protected float dashTime;
-    [SerializeField] protected float dashSpeed;
+    [SerializeField] protected DashSkillSO dashSkillSO;
 
     // Weapon
     [SerializeField] protected int maxWeaponSlot;
 
     // Amor Regen
-    [SerializeField] protected float amorRegenTime;
-
+    [SerializeField] protected RegenSkillSO amorRegenSO;
 
     //============================================Get=============================================
     // Stat
@@ -31,15 +26,11 @@ public abstract class PlayerSO : CharacterSO
     public int MaxAmor => maxAmor;
 
     // Dash Skill
-    public float DashSpeed => dashSpeed;
-    public int DashSkillMC => dashSkillMC;
-    public int DashSkillHC => dashSkillHC;
-    public float DashSkillRT => dashSkillRT;
-    public float DashTime => dashTime;
+    public DashSkillSO DashSkillSO => dashSkillSO;
 
     // Weapon
     public int MaxWeaponSlot => maxWeaponSlot;
 
     // Amor Regen
-    public float AmorRegenTime => amorRegenTime;
+    public RegenSkillSO AmorRegenSO => amorRegenSO;
 }

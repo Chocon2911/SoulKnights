@@ -18,15 +18,7 @@ MonoBehaviour:
   moveSpeed: 5
   maxMana: 100
   maxAmor: 100
-  dashSkillMC: 0
-  dashSkillHC: 0
-  dashSkillRT: 0.25
-  dashTime: 0.25
-  dashSpeed: 15
+  dashSkillSO: {fileID: 11400000, guid: 588c3dc88df8f924fbc8268ed2dcc053, type: 2}
   maxWeaponSlot: 2
-  amorRegenTime: 5
-  characterSkillMC: 0
-  characterSkillHC: 0
-  characterSkillRT: 1
-  characterSkillExistDuration: 5
-  weaponAtkDelay: 0.1
+  amorRegenSO: {fileID: 11400000, guid: 959e3d1c831fac64dbf223773d0402b9, type: 2}
+  dualWield: {fileID: 11400000, guid: c3188f6ef0251c141b19a19d70175d99, type: 2}

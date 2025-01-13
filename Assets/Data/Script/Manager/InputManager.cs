@@ -116,6 +116,8 @@ public class InputManager : HuyMonoBehaviour
         if (Input.GetKeyDown(this.backMove) || Input.GetKey(this.backMove)) this.moveDir.y = -1;
         else if (Input.GetKeyDown(this.frontMove) || Input.GetKey(this.frontMove)) this.moveDir.y = 1;
 
+        this.moveDir = this.moveDir.normalized;
+
         // LeftMouse State
         if (Input.GetKey(this.leftMouse))
         {

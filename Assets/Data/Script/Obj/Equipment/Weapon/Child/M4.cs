@@ -9,17 +9,8 @@ public class M4 : Weapon, IAttackable
     [Header("//============================================================================================")]
     [Space(25)]
     [Header("===M4===")]
-    [SerializeField] private float fireRate;
+    [SerializeField] private ShootSkill shootSkill;
     [SerializeField] private Transform bullet;
-    [SerializeField] private Skill skill;
-    [SerializeField] private bool canSkillCD;
-
-    //==========================================Get Set===========================================
-    public float FireRate
-    {
-        get => fireRate;
-        set => fireRate = value;
-    }
 
     //===========================================Unity============================================
     protected override void LoadComponents()
@@ -30,43 +21,31 @@ public class M4 : Weapon, IAttackable
 
     private void OnEnable()
     {
-        this.canSkillCD = true;
+        this.shootSkill.IsCharging = true;
     }
 
     private void FixedUpdate()
     {
-        this.SkillCoolingDown();
+        this.ShootSkillUpdate();
     }
 
     //========================================IAttackable=========================================
     public void Attack(HpReceiver hpRecv, ManaReceiver manaRecv, int state)
     {
-        if (state <= 0 
-            || !this.skill.CanUseSkill(hpRecv.GetCurrHp(), manaRecv.GetCurrMana()) 
-            || !this.skill.SkillCD.IsReady) return;
-        
-        Transform newBullet = SkillUtil.Instance.Shoot(bullet, transform.position, transform.rotation);
-        if (newBullet == null) return;
-        
-        Bullet bulletScript = newBullet.GetComponent<Bullet>();
-        if (bullet == null)
-        {
-            Debug.LogError("Bullet is null", transform.gameObject);
-            return;
-        }
-
-        bulletScript.SetShooter(transform);
-        newBullet.gameObject.SetActive(true);
-        SkillUtil.Instance.ConsumeHp(hpRecv, this.skill);
-        SkillUtil.Instance.ConsumeMana(manaRecv, this.skill);
-        this.skill.SkillCD.ResetStatus();
+        if (state <= 0) return;
+        this.shootSkill.Shooting(hpRecv, manaRecv, bullet, transform, transform.position, transform.rotation);
     }
 
-    //===========================================Skill============================================
-    private void SkillCoolingDown()
+    //========================================Shoot Skill=========================================
+    private void ShootSkillUpdate()
     {
-        if (!this.canSkillCD || this.skill.SkillCD.IsReady) return;
-        this.skill.SkillCD.CoolingDown();
+        this.shootSkill.Recharging();
+    }
+
+    private void DefaultShootSkill(M4SO m4SO)
+    {
+        this.shootSkill = new ShootSkill(m4SO.Skill, Time.fixedDeltaTime);
+        this.shootSkill.IsCharging = true;
     }
 
     //==========================================Override==========================================
@@ -81,8 +60,7 @@ public class M4 : Weapon, IAttackable
             return;
         }
 
-        this.fireRate = m4SO.FireRate;
         this.bullet = m4SO.Bullet;
-        this.skill.SkillCD = new Cooldown(1 / this.fireRate, Time.fixedDeltaTime);
+        this.DefaultShootSkill(m4SO);
     }
 }

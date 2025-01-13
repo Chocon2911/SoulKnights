@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface DamageReceiver
 {
-    public DamagableType GetFactionType();
+    public FactionType GetFactionType();
 }

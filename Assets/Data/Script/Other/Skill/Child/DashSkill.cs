@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
+[Serializable]
 public class DashSkill : Skill
 {
     //==========================================Variable==========================================
@@ -11,23 +13,40 @@ public class DashSkill : Skill
     [SerializeField] protected float dashSpeed;
     [SerializeField] protected bool isUsingSkill;
     [SerializeField] protected bool isRechargingSkill;
-    
+
+    //==========================================Get Set===========================================
+    public bool IsUsingSkill { get => isUsingSkill; set => isUsingSkill = value; }
+    public bool IsRechargingSkill { get => isRechargingSkill; set => isRechargingSkill = value; }
+
     //========================================Constructor=========================================
-    public DashSkill(int manaCost, int hpCost, Cooldown skillCD, float dashSpeed) 
-        : base(manaCost, hpCost, skillCD)
+    public DashSkill(int manaCost, int hpCost, Cooldown skillCD, Cooldown dashCD, float dashSpeed) : 
+        base(manaCost, hpCost, skillCD)
     {
+        this.dashCD = dashCD;
         this.dashSpeed = dashSpeed;
         this.isUsingSkill = false;
         this.isRechargingSkill = false;
     }
 
-    //===========================================Method===========================================
-    public void UseDash(Vector2 dashDir)
+    public DashSkill(DashSkillSO so, float waitTime) :
+        base(so.ManaCost, so.HpCost, new Cooldown(so.SkillRechargeTime, waitTime))
     {
-        if (!this.skillCD.IsReady) return;
+        this.dashCD = new Cooldown(so.DashTime, waitTime);
+        this.dashSpeed = so.DashSpeed;
+        this.isUsingSkill = false;
+        this.isRechargingSkill = false;
+    }
+
+
+    //===========================================Method===========================================
+    public void UseDash(HpReceiver hpRecv, ManaReceiver manaRecv, Vector2 dashDir)
+    {
+        if (!this.skillCD.IsReady || !this.CanUseSkill(hpRecv.GetCurrHp(), manaRecv.GetCurrMana())) return;
         this.dashDir = dashDir;
         this.isUsingSkill = true;
         this.isRechargingSkill = false;
+        SkillUtil.Instance.ConsumeHp(hpRecv, this);
+        SkillUtil.Instance.ConsumeMana(manaRecv, this);
         this.skillCD.ResetStatus();
     }
 
@@ -36,7 +55,7 @@ public class DashSkill : Skill
         if (!this.dashCD.IsReady) return;
         this.isUsingSkill = false;
         this.isRechargingSkill = true;
-        this.skillCD.ResetStatus();
+        this.dashCD.ResetStatus();
     }
 
     public void DashRecharging()
@@ -49,7 +68,6 @@ public class DashSkill : Skill
     {
         if (!this.isUsingSkill) return;
         this.dashCD.CoolingDown();
-        rb.velocity = Vector2.zero;
         MovementUtil.Instance.Move(rb, this.dashSpeed, this.dashDir);
     }
 }

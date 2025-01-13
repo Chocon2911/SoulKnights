@@ -148,7 +148,7 @@ Transform:
   m_GameObject: {fileID: 207572486}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: -0.1, z: 0}
+  m_LocalPosition: {x: -0.2, y: -0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 315542229}
   - component: {fileID: 315542228}
   - component: {fileID: 315542227}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Knight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,6 +187,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1006326461}
+  - {fileID: 913478561}
   - {fileID: 586496360}
   - {fileID: 1203057735}
   m_Father: {fileID: 1883560183}
@@ -220,7 +221,7 @@ MonoBehaviour:
   amor: 0
   factionType: 0
   playerState: 0
-  dashSkill:
+  dashSkillNew:
     manaCost: 0
     hpCost: 0
     skillCD:
@@ -228,44 +229,59 @@ MonoBehaviour:
       timer: 0
       waitTime: 0.02
       isReady: 0
-  dashCD:
-    timeLimit: 0.25
-    timer: 0
-    waitTime: 0.02
-    isReady: 0
-  dashDir: {x: 0, y: 0}
-  dashSpeed: 15
-  canDash: 0
-  canDashCD: 1
+    dashCD:
+      timeLimit: 0.25
+      timer: 0
+      waitTime: 0.02
+      isReady: 0
+    dashDir: {x: 0, y: 0}
+    dashSpeed: 15
+    isUsingSkill: 0
+    isRechargingSkill: 1
+  rightArm: {fileID: 0}
   weapons:
   - {fileID: 832571037}
   maxWeaponSlot: 2
   currWeaponSlot: 0
-  amorRegenCD:
-    timeLimit: 5
-    timer: 0
-    waitTime: 0.02
-    isReady: 0
-  canRegenAmor: 0
-  leftArm: {fileID: 207572487}
-  leftWeapon: {fileID: 0}
-  characterSkill:
+  amorRegenSkill:
     manaCost: 0
     hpCost: 0
     skillCD:
-      timeLimit: 15
+      timeLimit: 5
       timer: 0
       waitTime: 0.02
       isReady: 0
-  characterSkillExistCD:
-    timeLimit: 5
-    timer: 0
-    waitTime: 0.02
-    isReady: 0
-  weaponAtkDelay: 0.1
-  chosenWeaponSlot: 0
-  canUseCharacterSkill: 0
-  canCharacterSkillCD: 1
+    regenCD:
+      timeLimit: 1
+      timer: 0
+      waitTime: 0.02
+      isReady: 0
+    regenInt: 1
+    regenFloat: 0
+    isRecharging: 1
+    isRegening: 0
+  dualWield:
+    manaCost: 0
+    hpCost: 0
+    skillCD:
+      timeLimit: 10
+      timer: 0
+      waitTime: 0.02
+      isReady: 0
+    leftWeaponHolder: {fileID: 1203057735}
+    leftArm: {fileID: 207572487}
+    mainWeapon: {fileID: 0}
+    leftWeapon: {fileID: 0}
+    skillExistCD:
+      timeLimit: 5
+      timer: 0
+      waitTime: 0.02
+      isReady: 0
+    weaponAtkDelay: 0.05
+    isUsingSkill: 0
+    isRechargingSkill: 1
+    hasfirstAttackDone: 0
+    hasSecondAttackDone: 0
 --- !u!50 &315542228
 Rigidbody2D:
   serializedVersion: 4
@@ -725,7 +741,7 @@ GameObject:
   m_Component:
   - component: {fileID: 832571036}
   - component: {fileID: 832571037}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: M4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -765,19 +781,18 @@ MonoBehaviour:
   so: {fileID: 11400000, guid: 3e2761e2c3b439c4785abda1ee02a318, type: 2}
   image: {fileID: 1930365210}
   myAnimator: {fileID: 0}
-  holdRad: 0.7
+  holdRad: 0.1
   isLeft: 0
-  fireRate: 0.5
-  bullet: {fileID: 8971958095379382294, guid: d031a30c1fb503d4f8c17d3ddadd486b, type: 3}
-  skill:
+  shootSkill:
     manaCost: 0
     hpCost: 0
     skillCD:
-      timeLimit: 2
+      timeLimit: 0.1
       timer: 0
-      waitTime: 0.02
+      waitTime: 0.001
       isReady: 0
-  canSkillCD: 0
+    isCharging: 1
+  bullet: {fileID: 8971958095379382294, guid: d031a30c1fb503d4f8c17d3ddadd486b, type: 3}
 --- !u!1 &843313109
 GameObject:
   m_ObjectHideFlags: 0
@@ -840,6 +855,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 587641344}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &913478560
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 913478561}
+  m_Layer: 0
+  m_Name: RightArm
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &913478561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 913478560}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.2, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 315542226}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1006326460
 GameObject:
@@ -933,8 +979,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1466526229
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 423213423, guid: fe67996d1e14fce4188e7201a6fd0170, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1284,22 +1330,22 @@ MonoBehaviour:
   spaceState: 0
   mousePos: {x: 0, y: 0}
   leftClickCD:
-    timeLimit: 0.2
+    timeLimit: 0.25
     timer: 0
     waitTime: 0
     isReady: 0
   rightClickCD:
-    timeLimit: 0.2
+    timeLimit: 0.25
     timer: 0
     waitTime: 0
     isReady: 0
   shiftCD:
-    timeLimit: 0.2
+    timeLimit: 0.25
     timer: 0
     waitTime: 0
     isReady: 0
   spaceCD:
-    timeLimit: 0.2
+    timeLimit: 0.25
     timer: 0
     waitTime: 0
     isReady: 0
@@ -1405,8 +1451,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1063974421
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 628cf2fd1a06bdb47bfa8350e4be26b3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

@@ -78,8 +78,8 @@ public class MovementUtil
         this.MoveForward(rb, moveSpeed);
     }
 
-    private void Rotate(Transform myObj, float addAngle) 
+    private void Rotate(Transform myObj, float rotateSpeed) 
     {
-        myObj.eulerAngles = new Vector3(0, 0, myObj.eulerAngles.z + addAngle);
+        myObj.eulerAngles = new Vector3(0, 0, myObj.eulerAngles.z + rotateSpeed);
     }
 }

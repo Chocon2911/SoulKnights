@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ManaReceiver
+public interface ManaReceiver : ManaHolder
 {
-    public int GetCurrMana();
     public void Receive(int mana);
 }

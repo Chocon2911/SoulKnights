@@ -12,7 +12,7 @@ public class BulletSO : ObjSO
     [SerializeField] private int damage;
     [SerializeField] private float despawnTime;
     [SerializeField] private float despawnDistance;
-    [SerializeField] private List<DamagableType> damgableTypes;
+    [SerializeField] private List<FactionType> damgableTypes;
 
     // Poison Effect
     [SerializeField] protected float fireEffDuration;
@@ -28,7 +28,7 @@ public class BulletSO : ObjSO
     public int Damage => damage;
     public float DespawnTime => despawnTime;
     public float DespawnDistance => despawnDistance;
-    public List<DamagableType> DamagableTypes => damgableTypes;
+    public List<FactionType> DamagableTypes => damgableTypes;
 
     // Poison Effect
     public float PoisonEffDuration => poisonEffDuration;

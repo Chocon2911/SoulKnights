@@ -7,10 +7,12 @@ public class M4SO : WeaponSO
 {
     //==========================================Variable==========================================
     [Header("M4")]
+    [SerializeField] private ShootSkillSO skill;
     [SerializeField] private float fireRate;
     [SerializeField] private Transform bullet;
 
     //============================================Get=============================================
+    public ShootSkillSO Skill => skill;
     public float FireRate => fireRate;
     public Transform Bullet => bullet;
 }

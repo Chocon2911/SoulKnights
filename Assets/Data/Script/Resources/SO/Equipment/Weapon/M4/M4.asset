@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   objName: M4
-  holdRad: 0.7
+  holdRad: 0.5
+  skill: {fileID: 11400000, guid: 34879ca6261e5b0488f3504e9c3609b9, type: 2}
   fireRate: 20
   bullet: {fileID: 8971958095379382294, guid: d031a30c1fb503d4f8c17d3ddadd486b, type: 3}

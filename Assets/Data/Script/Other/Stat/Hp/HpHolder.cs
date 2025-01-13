@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum DamagableType
+public interface HpHolder
 {
-    PLAYER = 0,
-    ENEMY = 1,
-    SELF = 2,
+    public int GetCurrHp();
 }

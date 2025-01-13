@@ -61,12 +61,14 @@ public class SkillUtil
     //===========================================Other============================================
     public void ConsumeHp(HpReceiver receiver, Skill skill)
     {
+        if (receiver == null) return;
         if (receiver.GetCurrHp() <= skill.HpCost) return;
         receiver.Receive(-skill.HpCost);
     }
 
     public void ConsumeMana(ManaReceiver receiver, Skill skill) 
     {
+        if (receiver == null) return;
         receiver.Receive(-skill.ManaCost);
     }
 }

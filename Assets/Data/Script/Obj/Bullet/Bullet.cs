@@ -15,7 +15,7 @@ public abstract class Bullet : BaseObj, HpSender
     [Header("// Stat")]
     [SerializeField] protected float moveSpeed;
     [SerializeField] protected int damage;
-    [SerializeField] protected List<DamagableType> damgableTypes;
+    [SerializeField] protected List<FactionType> damgableTypes;
 
     [Header("// Movement")]
     [SerializeField] protected bool canMove;
@@ -57,7 +57,7 @@ public abstract class Bullet : BaseObj, HpSender
         set => damage = value;
     }
 
-    public List<DamagableType> DamagableTypes
+    public List<FactionType> DamagableTypes
     {
         get => damgableTypes;
     }
@@ -141,7 +141,7 @@ public abstract class Bullet : BaseObj, HpSender
         DamageReceiver receiver = collision.transform.GetComponent<DamageReceiver>();
         if (receiver != null)
         {
-            foreach (DamagableType child in this.damgableTypes)
+            foreach (FactionType child in this.damgableTypes)
             {
                 if (child != receiver.GetFactionType()) continue;
                 this.OnColliding(collision.transform);

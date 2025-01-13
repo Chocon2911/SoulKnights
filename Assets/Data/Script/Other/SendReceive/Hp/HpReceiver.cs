@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface HpReceiver : DamageReceiver
+public interface HpReceiver : DamageReceiver, HpHolder
 {
-    public int GetCurrHp();
     public void Receive(int hp);
 }

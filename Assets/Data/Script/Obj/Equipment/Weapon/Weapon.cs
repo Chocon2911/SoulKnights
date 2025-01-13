@@ -29,8 +29,9 @@ public abstract class Weapon : BaseObj
     //===========================================Method===========================================
     public virtual void HoldingWeapon(Transform owner, float angle)
     {
-        Vector2 pos = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)) * this.holdRad;
-        transform.localPosition = pos;
+        Vector2 pos = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)) 
+            * this.holdRad;
+        transform.position = pos + (Vector2)owner.position;
 
         float imageYAngle = this.image.transform.localEulerAngles.y;
         float imageZAngle = this.image.transform.localEulerAngles.z;

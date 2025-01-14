@@ -4,6 +4,10 @@ using UnityEngine;
 
 public interface HpReceiver : DamageReceiver
 {
+<<<<<<< Updated upstream
     public int GetCurrHp();
     public void Receive(int hp);
+=======
+    public void ReceiveHp(int hp);
+>>>>>>> Stashed changes
 }

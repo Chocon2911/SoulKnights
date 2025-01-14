@@ -62,11 +62,16 @@ public class SkillUtil
     public void ConsumeHp(HpReceiver receiver, Skill skill)
     {
         if (receiver.GetCurrHp() <= skill.HpCost) return;
-        receiver.Receive(-skill.HpCost);
+        receiver.ReceiveHp(-skill.HpCost);
     }
 
     public void ConsumeMana(ManaReceiver receiver, Skill skill) 
     {
+<<<<<<< Updated upstream
         receiver.Receive(-skill.ManaCost);
+=======
+        if (receiver == null) return;
+        receiver.ReceiveMana(-skill.ManaCost);
+>>>>>>> Stashed changes
     }
 }

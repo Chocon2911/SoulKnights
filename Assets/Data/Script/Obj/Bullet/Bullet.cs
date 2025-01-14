@@ -156,7 +156,7 @@ public abstract class Bullet : BaseObj, HpSender
     //==========================================HpSender==========================================
     void HpSender.Send(HpReceiver receiver) 
     {
-        receiver.Receive(this.damage);
+        receiver.ReceiveHp(this.damage);
         DespawnUtil.Instance.Despawn(transform, BulletSpawner.Instance);
     }
 

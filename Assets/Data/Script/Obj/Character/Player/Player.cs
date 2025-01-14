@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver, FireEffReceiver
+public class Player : BaseCharacter, ManaReceiver, PoisonEffReceiver, FireEffReceiver
 {
     //==========================================Variable==========================================
     [Space(25)]
@@ -17,6 +17,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     [SerializeField] protected int amor;
     [SerializeField] protected DamagableType factionType;
 
+<<<<<<< Updated upstream
     [Header("// Dash Skill")]    
     [SerializeField] protected Skill dashSkill;
     [SerializeField] protected Cooldown dashCD;
@@ -24,6 +25,14 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     [SerializeField] protected float dashSpeed;
     [SerializeField] protected bool canDash;
     [SerializeField] protected bool canDashCD;
+=======
+    [Header("// Movement")]
+    [SerializeField] protected float moveSpeed;
+    [SerializeField] protected bool canMove;
+
+    [Header("// Dash Skill")]
+    [SerializeField] protected DashSkill dashSkillNew;
+>>>>>>> Stashed changes
 
     [Header("// Weapon")]
     [SerializeField] protected List<Weapon> weapons;
@@ -84,6 +93,12 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     {
         if (!this.canMove || !this.canDash) return;
         MovementUtil.Instance.MoveByKeyboard(this.rb, this.moveSpeed);
+    }
+
+    protected virtual void DefaultMovement(PlayerSO playerSO)
+    {
+        this.moveSpeed = playerSO.MoveSpeed;
+        this.canMove = true;
     }
 
 
@@ -182,17 +197,25 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     //============================================================================================
 
     //======================================Damage Receiver=======================================
+<<<<<<< Updated upstream
     DamagableType DamageReceiver.GetFactionType()
+=======
+    public override FactionType GetFactionType()
+>>>>>>> Stashed changes
     {
         return this.factionType;
     }
     //========================================Hp Receiver=========================================
+<<<<<<< Updated upstream
     int HpReceiver.GetCurrHp()
+=======
+    public override int GetCurrHp()
+>>>>>>> Stashed changes
     {
         return this.hp;
     }
 
-    void HpReceiver.Receive(int hp)
+    public override void ReceiveHp(int hp)
     {
         if (this.hp + hp > this.maxHp) this.hp = this.maxHp;
         else this.hp += hp;
@@ -205,25 +228,33 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     }
 
     //=======================================Mana Receiver========================================
+<<<<<<< Updated upstream
     int ManaReceiver.GetCurrMana()
+=======
+    public int GetCurrMana()
+>>>>>>> Stashed changes
     {
         return this.mana;
     }
 
+<<<<<<< Updated upstream
     public void Receive(int mana)
+=======
+    public void ReceiveMana(int mana)
+>>>>>>> Stashed changes
     {
         if (this.mana + mana > this.maxMana) this.mana = this.maxMana;
         else this.mana += mana;
     }
 
     //======================================Poison Receiver=======================================
-    void PoisonEffReceiver.Receive(float poisonDuration, float damage)
+    public void ReceivePoisonEff(float poisonDuration, float damage)
     {
         throw new System.NotImplementedException();
     }
 
     //=======================================Fire Receiver========================================
-    void FireEffReceiver.Receive(float fireDuration, float damage)
+    public void ReceiveFireEff(float fireDuration, float damage)
     {
         throw new System.NotImplementedException();
     }

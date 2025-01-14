@@ -5,7 +5,7 @@ using UnityEngine.TextCore.Text;
 
 [RequireComponent(typeof(CapsuleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public abstract class BaseCharacter : BaseObj
+public abstract class BaseCharacter : BaseObj, HpReceiver
 {
     //==========================================Variable==========================================
     [Space(25)]
@@ -15,8 +15,6 @@ public abstract class BaseCharacter : BaseObj
     [Header("// Stat")]
     [SerializeField] protected int maxHp;
     [SerializeField] protected int hp;
-    [SerializeField] protected float moveSpeed;
-    [SerializeField] protected bool canMove;
 
     [Header("// Component")]
     [SerializeField] protected CapsuleCollider2D bodyCollider;
@@ -33,12 +31,6 @@ public abstract class BaseCharacter : BaseObj
     public int Hp
     {
         get => hp;
-    }
-
-    public float MoveSpeed
-    {
-        get => moveSpeed; 
-        set => moveSpeed = value;
     }
 
     // Component
@@ -62,16 +54,21 @@ public abstract class BaseCharacter : BaseObj
         this.LoadComponent(ref this.rb, transform, "LoadRb()");
     }
 
+    //=========================================HpReceiver=========================================
+    public abstract FactionType GetFactionType();
+    public abstract int GetCurrHp();
+    public abstract void ReceiveHp(int hp);
+
+
     //===========================================Other============================================
     protected virtual void DefaultCharacterStat(CharacterSO characterSO)
     {
         this.maxHp = characterSO.MaxHp;
-        this.moveSpeed = characterSO.MoveSpeed;
     }
 
     protected virtual void DefaultCharacterComponent() 
     {
-    this.rb.isKinematic = false;
+        this.rb.isKinematic = false;
         this.rb.gravityScale = 0;
         this.bodyCollider.isTrigger = false;
     }

@@ -7,9 +7,12 @@ public abstract class PlayerSO : CharacterSO
 {
     //==========================================Variable==========================================
     [Header("Player")]
-    //Stat
+    // Stat
     [SerializeField] protected int maxMana;
     [SerializeField] protected int maxAmor;
+
+    // Movement
+    [SerializeField] protected float moveSpeed;
 
     // Dash Skill
     [SerializeField] protected int dashSkillMC; // Dash Skill Mana Cost
@@ -29,6 +32,9 @@ public abstract class PlayerSO : CharacterSO
     // Stat
     public int MaxMana => maxMana;
     public int MaxAmor => maxAmor;
+
+    // Movement
+    public float MoveSpeed => moveSpeed;
 
     // Dash Skill
     public float DashSpeed => dashSpeed;

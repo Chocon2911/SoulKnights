@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface PoisonEffSender
 {
-    public void Send(PoisonEffReceiver receiver);
+    public void SendPoisonEff(PoisonEffReceiver receiver);
 }

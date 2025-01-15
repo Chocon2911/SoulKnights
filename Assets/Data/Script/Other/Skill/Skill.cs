@@ -41,7 +41,7 @@ public class Skill
     //===========================================Method===========================================
     public bool CanUseSkill(int hp, int mana)
     {
-        if (mana < this.manaCost || hp <= this.hpCost) { Debug.Log("Hello"); return false; }
+        if (mana < this.manaCost || hp <= this.hpCost) { return false; }
         return true;
     }
 }

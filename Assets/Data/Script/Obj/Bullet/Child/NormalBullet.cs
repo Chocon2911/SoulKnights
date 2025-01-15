@@ -7,7 +7,7 @@ public class NormalBullet : Bullet
     //===========================================Unity============================================
     protected override void LoadComponents()
     {
-        this.LoadSO(ref this.so, "SO/Projectile/Bullet/NormalBullet");
+        this.LoadSO(ref this.so, "SO/Projectile/Bullet/" + transform.name);
         base.LoadComponents();
     }
 
@@ -28,6 +28,7 @@ public class NormalBullet : Bullet
     //==========================================Override==========================================
     protected override void OnColliding(Transform collidedObj)
     {
-        throw new System.NotImplementedException();
+        base.OnColliding(collidedObj);
+        BulletSpawner.Instance.Despawn(transform);
     }
 }

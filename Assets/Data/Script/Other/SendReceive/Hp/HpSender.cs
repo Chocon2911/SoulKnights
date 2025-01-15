@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface HpSender
 {
-    public void Send(HpReceiver receiver);
+    public void SendHp(HpReceiver receiver);
 }

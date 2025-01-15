@@ -24,15 +24,28 @@ public class IdentifyObjByCollide : HuyMonoBehaviour
         if (collision.transform == this.owner) return;
         foreach (string tag in this.tags)
         {
-            if (tag != collision.tag) return;
+            if (tag != collision.tag) continue;
             this.target = collision.transform;
-            return;
+            break;
         }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.transform == this.target) this.target = null;
     }
 
     protected override void LoadComponents()
     {
         base.LoadComponents();
         this.identifyZone = this.GetComponent<CircleCollider2D>();
+    }
+
+    //===========================================Method===========================================
+    public void DefaultStat(IdentifyObjByCollideSO so)
+    {
+        this.identifyZone.radius = so.DetectRange;
+        this.tags = so.Tags;
+        this.identifyZone.isTrigger = true;
     }
 }

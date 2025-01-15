@@ -16,8 +16,6 @@ public class DualWieldSkill : Skill
     [SerializeField] private float weaponAtkDelay;
     [SerializeField] private bool isUsingSkill;
     [SerializeField] private bool isRechargingSkill;
-    [SerializeField] private bool hasfirstAttackDone;
-    [SerializeField] private bool hasSecondAttackDone;
 
     //==========================================Get Set===========================================
     public Cooldown SkillExistCD

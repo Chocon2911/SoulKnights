@@ -2,20 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class M4 : Weapon, IAttackable
+public class NormalGun : Weapon, IAttackable
 {
     //==========================================Variable==========================================
     [Space(25)]
     [Header("//============================================================================================")]
     [Space(25)]
-    [Header("===M4===")]
+    [Header("===Normal Gun===")]
     [SerializeField] private ShootSkill shootSkill;
     [SerializeField] private Transform bullet;
 
     //===========================================Unity============================================
     protected override void LoadComponents()
     {
-        this.LoadSO(ref this.so, "SO/Equipment/Weapon/M4/M4");
+        this.LoadSO(ref this.so, "SO/Equipment/Weapon/NormalGun/" + transform.name);
         base.LoadComponents();
     }
 
@@ -33,7 +33,7 @@ public class M4 : Weapon, IAttackable
     public void Attack(HpReceiver hpRecv, ManaReceiver manaRecv, int state)
     {
         if (state <= 0) return;
-        this.shootSkill.Shooting(hpRecv, manaRecv, bullet, transform, transform.position, transform.rotation);
+        this.shootSkill.Shooting(hpRecv, manaRecv, this.bullet, transform, transform.position, transform.rotation);
     }
 
     //========================================Shoot Skill=========================================
@@ -42,9 +42,9 @@ public class M4 : Weapon, IAttackable
         this.shootSkill.Recharging();
     }
 
-    private void DefaultShootSkill(M4SO m4SO)
+    private void DefaultShootSkill(NormalGunSO normalGunSO)
     {
-        this.shootSkill = new ShootSkill(m4SO.Skill, Time.fixedDeltaTime);
+        this.shootSkill = new ShootSkill(normalGunSO.Skill, Time.fixedDeltaTime);
         this.shootSkill.IsCharging = true;
     }
 
@@ -53,10 +53,10 @@ public class M4 : Weapon, IAttackable
     {
         base.DefaultStat();
 
-        M4SO m4SO = (M4SO)this.so;
+        NormalGunSO m4SO = (NormalGunSO)this.so;
         if (m4SO == null)
         {
-            Debug.LogError("M4SO is null", transform.gameObject);
+            Debug.LogError("NormalGunSO is null", transform.gameObject);
             return;
         }
 

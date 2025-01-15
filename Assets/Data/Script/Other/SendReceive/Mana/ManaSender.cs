@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface ManaSender
 {
-    public void Send(ManaReceiver receiver);
+    public void SendMana(ManaReceiver receiver);
 }

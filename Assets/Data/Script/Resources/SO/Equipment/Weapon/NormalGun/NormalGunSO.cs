@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "M4", menuName = "SO/Equipment/Weapon/M4")]
-public class M4SO : WeaponSO
+[CreateAssetMenu(fileName = "M4", menuName = "SO/Equipment/Weapon/NormalGun")]
+public class NormalGunSO : WeaponSO
 {
     //==========================================Variable==========================================
-    [Header("M4")]
+    [Header("NormalGun")]
     [SerializeField] private ShootSkillSO skill;
-    [SerializeField] private float fireRate;
     [SerializeField] private Transform bullet;
 
     //============================================Get=============================================
     public ShootSkillSO Skill => skill;
-    public float FireRate => fireRate;
     public Transform Bullet => bullet;
 }

@@ -22,6 +22,8 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     [SerializeField] protected int mana;
     [SerializeField] protected int maxAmor;
     [SerializeField] protected int amor;
+    [SerializeField] protected StatEffect poisonEff;
+    [SerializeField] protected StatEffect fireEff;
     [SerializeField] protected FactionType factionType;
     [SerializeField] protected PlayerState playerState;
 
@@ -40,11 +42,8 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     //==========================================Get Set===========================================
     // Stat
     public int MaxMana => maxMana;
-
     public int Mana => mana;
-
     public int MaxAmor => maxAmor;
-
     public int Amor => amor;
     public FactionType FactionType => FactionType;
 
@@ -73,12 +72,31 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
 
     protected virtual void FixedUpdate()
     {
+        this.PoisonEffHandling();
+        this.FireEffHandling();
         this.Moving();
         this.CheckDashFixedUpdateNew();
         this.WeaponHolding();
         this.WeaponHandling();
         this.AmorRegenFixedUpdate();
         this.AnimationHandling();
+    }
+
+
+
+    //============================================================================================
+    //============================================Stat============================================
+    //============================================================================================
+    protected virtual void PoisonEffHandling()
+    {
+        this.poisonEff.CoolingDown();
+        this.poisonEff.DealingDamage(ref this.hp);
+    }
+
+    protected virtual void FireEffHandling()
+    {
+        this.fireEff.CoolingDown();
+        this.poisonEff.DealingDamage(ref this.hp);
     }
 
 
@@ -181,26 +199,16 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         if (this.weapons.Count < this.currWeaponSlot 
             || this.weapons[this.currWeaponSlot - 1] == null) return;
 
-        Vector2 distance = InputManager.Instance.MousePos - (Vector2)transform.position;
-        float angle = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg;
-        this.weapons[this.currWeaponSlot - 1].HoldingWeapon(this.rightArm, angle);
+        WeaponUtil.Instance.WeaponHolding(this.weapons[this.currWeaponSlot - 1], 
+            this.rightArm, transform.position, InputManager.Instance.MousePos);
     }
 
     protected virtual void WeaponHandling()
     {
         if (this.weapons[this.currWeaponSlot - 1] == null) return;
-
-        if (this.weapons[this.currWeaponSlot - 1] is IAttackable)
-        {
-            IAttackable firstAtk = (IAttackable)this.weapons[this.currWeaponSlot - 1];
-            firstAtk.Attack(this, this, InputManager.Instance.LeftClickState);
-        }
-
-        if (this.weapons[this.currWeaponSlot - 1] is ISecondaryAttack)
-        {
-            ISecondaryAttack secondaryAtk = (ISecondaryAttack)this.weapons[this.currWeaponSlot - 1];
-            secondaryAtk.SecondaryAttack(this, this, InputManager.Instance.RightClickState);
-        }
+        WeaponUtil.Instance.WeaponHandling(this.weapons[this.currWeaponSlot - 1], 
+            InputManager.Instance.LeftClickState, InputManager.Instance.RightClickState,
+            this, this);
     }
 
 
@@ -221,7 +229,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         return this.hp;
     }
 
-    void HpReceiver.Receive(int hp)
+    void HpReceiver.ReceiveHp(int hp)
     {
         if (this.hp + hp > this.maxHp) this.hp = this.maxHp;
         else this.hp += hp;
@@ -239,22 +247,22 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         return this.mana;
     }
 
-    void ManaReceiver.Receive(int mana)
+    void ManaReceiver.ReceiveMana(int mana)
     {
         if (this.mana + mana > this.maxMana) this.mana = this.maxMana;
         else this.mana += mana;
     }
 
     //======================================Poison Receiver=======================================
-    void PoisonEffReceiver.Receive(float poisonDuration, float damage)
+    void PoisonEffReceiver.ReceivePoisonEff(float poisonDuration, int damage)
     {
-        throw new System.NotImplementedException();
+        this.poisonEff.ActivateEff(poisonDuration, damage);
     }
 
     //=======================================Fire Receiver========================================
-    void FireEffReceiver.Receive(float fireDuration, float damage)
+    void FireEffReceiver.ReceiveFireEff(float fireDuration, int damage)
     {
-        throw new System.NotImplementedException();
+        this.fireEff.ActivateEff(fireDuration, damage);
     }
 
 
@@ -277,7 +285,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     protected virtual void DefaultPlayerStat(PlayerSO playerSO)
     {
         this.maxMana = playerSO.MaxMana;
+        this.mana = this.maxMana;
         this.maxAmor = playerSO.MaxAmor;
+        this.amor = this.maxAmor;
+        this.poisonEff = new StatEffect(0, EffectUtil.PoisonDealDamageDelay, 0);
+        this.fireEff = new StatEffect(0, EffectUtil.FireDealDamageDelay, 0);
         this.factionType = FactionType.PLAYER;
     }
 

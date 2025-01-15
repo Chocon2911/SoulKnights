@@ -63,12 +63,12 @@ public class SkillUtil
     {
         if (receiver == null) return;
         if (receiver.GetCurrHp() <= skill.HpCost) return;
-        receiver.Receive(-skill.HpCost);
+        receiver.ReceiveHp(-skill.HpCost);
     }
 
     public void ConsumeMana(ManaReceiver receiver, Skill skill) 
     {
         if (receiver == null) return;
-        receiver.Receive(-skill.ManaCost);
+        receiver.ReceiveMana(-skill.ManaCost);
     }
 }

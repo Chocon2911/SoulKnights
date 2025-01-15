@@ -55,11 +55,8 @@ public class Cooldown
             return;
         }
         
-        this.OnCD();
         this.timer += this.waitTime;
     }
-
-    public Action OnCD = () => { };
 
     public void ResetStatus()
     {

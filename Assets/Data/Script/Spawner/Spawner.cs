@@ -109,7 +109,7 @@ public abstract class Spawner : HuyMonoBehaviour
     {
         foreach (Transform obj in this.holders)
         {
-            if (obj.name == spawnObj.name + "(Clone)")
+            if (obj.name == spawnObj.name)
             {
                 //Debug.Log(transform.name + ": From Holder", transform.gameObject);
                 this.holders.Remove(obj);
@@ -118,6 +118,8 @@ public abstract class Spawner : HuyMonoBehaviour
         }
 
         //Debug.Log(transform.name + ": Create new", transform.gameObject);
-        return Instantiate(spawnObj);
+        Transform newObj = Instantiate(spawnObj);
+        newObj.name = spawnObj.name;
+        return newObj;
     }
 }

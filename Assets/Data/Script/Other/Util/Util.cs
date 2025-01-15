@@ -46,4 +46,15 @@ public class Util
     {
         return new Vector2(this.RandomFloat(min.x, max.x), this.RandomFloat(min.y, max.y));
     }
+
+    public Vector2 RandomPos(Vector2 center, float rad)
+    {
+        // Circle Function: (x - center.x)^2 + (y - center.y)^2 = rad^2
+        float x = this.RandomFloat(center.x - rad, center.x + rad);
+
+        // y = sqrt(rad^2 - (x - center.x)^2) + center.y
+        float yLimit = Mathf.Sqrt(rad * rad - (x - center.x) * (x - center.x)) + center.y;
+        float y = this.RandomFloat(center.y - yLimit, center.y + yLimit);
+        return new Vector2(x, y);
+    }
 }

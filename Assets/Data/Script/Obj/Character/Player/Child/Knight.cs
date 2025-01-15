@@ -35,7 +35,8 @@ public class Knight : Player
         if (InputManager.Instance.ShiftState >= 1 
             && this.weapons.Count > 0
             && this.currWeaponSlot <= this.maxWeaponSlot
-            && this.currWeaponSlot >= 1) this.dualWield.UseDualWield(this.weapons[this.currWeaponSlot - 1]);
+            && this.currWeaponSlot >= 1) 
+            this.dualWield.UseDualWield(this.weapons[this.currWeaponSlot - 1]);
     }
 
     private void DualWieldFixedUpdate()
@@ -44,8 +45,8 @@ public class Knight : Player
         this.dualWield.DualWieldPerforming();
         this.dualWield.FinishDualWield();
         this.dualWield.WeaponHolding(transform.position, InputManager.Instance.MousePos);
-        this.dualWield.WeaponHandling(this, this, 
-            InputManager.Instance.LeftClickState, InputManager.Instance.RightClickState);
+        this.dualWield.WeaponHandling(this, this, InputManager.Instance.LeftClickState, 
+            InputManager.Instance.RightClickState);
     }
 
     private void DefaultDualWield(KnightSO knightSO)

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface HpReceiver : DamageReceiver, HpHolder
 {
-    public void Receive(int hp);
+    public void ReceiveHp(int hp);
 }

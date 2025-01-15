@@ -66,14 +66,17 @@ public abstract class BaseCharacter : BaseObj
     protected virtual void DefaultCharacterStat(CharacterSO characterSO)
     {
         this.maxHp = characterSO.MaxHp;
+        this.hp = this.maxHp;
         this.moveSpeed = characterSO.MoveSpeed;
     }
 
     protected virtual void DefaultCharacterComponent() 
     {
-    this.rb.isKinematic = false;
+        this.rb.isKinematic = false;
         this.rb.gravityScale = 0;
+        this.rb.freezeRotation = true;
         this.bodyCollider.isTrigger = false;
+        this.rb.drag = 10;
     }
 
     //==========================================Override==========================================

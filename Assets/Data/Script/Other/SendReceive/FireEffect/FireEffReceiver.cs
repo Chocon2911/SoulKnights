@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface FireEffReceiver : DamageReceiver
 {
-    public void Receive(float fireDuration, float damage);
+    public void ReceiveFireEff(float fireDuration, int damage);
 }

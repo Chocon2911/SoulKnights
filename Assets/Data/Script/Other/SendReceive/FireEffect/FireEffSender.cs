@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface FireEffSender
 {
-    public void Send(FireEffReceiver receiver);
+    public void SendFireEff(FireEffReceiver receiver);
 }

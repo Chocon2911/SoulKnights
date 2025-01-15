@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface PoisonEffReceiver : DamageReceiver
 {
-    public void Receive(float poisonDuration, float damage);
+    public void ReceivePoisonEff(float poisonDuration, int damage);
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd239dde2be367642973b9ae55359e6e, type: 3}
+  m_Name: Crep_1
+  m_EditorClassIdentifier: 
+  id: 
+  objName: Crep_1
+  maxHp: 100
+  moveSpeed: 5
+  faction: 1
+  identifyObjByCollideSO: {fileID: 11400000, guid: fa032f63e7db55341b9f93ea43dd7f34, type: 2}
+  minMoveRandomCD: 3
+  maxMoveRandomCD: 5
+  randomRange: 5

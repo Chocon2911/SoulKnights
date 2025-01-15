@@ -117,12 +117,12 @@ public abstract class Bullet : BaseObj, HpSender
     protected override void LoadComponents()
     {
         base.LoadComponents();
-        // Default
-        this.DefaultStat();
-
         // Load Component
         this.LoadComponent(ref this.rb, transform, "LoadRb()");
         this.LoadComponent(ref this.bodyCollider, transform, "LoadBodyCollider()");
+
+        // Default
+        this.DefaultStat();
     }
 
     protected virtual void OnEnable()
@@ -156,9 +156,9 @@ public abstract class Bullet : BaseObj, HpSender
     }
 
     //==========================================HpSender==========================================
-    void HpSender.Send(HpReceiver receiver) 
+    void HpSender.SendHp(HpReceiver receiver) 
     {
-        receiver.Receive(this.damage);
+        receiver.ReceiveHp(this.damage);
         DespawnUtil.Instance.Despawn(transform, BulletSpawner.Instance);
     }
 
@@ -254,5 +254,14 @@ public abstract class Bullet : BaseObj, HpSender
     }
 
     //==========================================Abstract==========================================
-    protected abstract void OnColliding(Transform collidedObj);
+    protected virtual void OnColliding(Transform collidedObj)
+    {
+        HpReceiver hpRecv = collidedObj.GetComponent<HpReceiver>();
+        FireEffReceiver fireEffRecv = collidedObj.GetComponent<FireEffReceiver>();
+        PoisonEffReceiver poisonEffRecv = collidedObj.GetComponent<PoisonEffReceiver>();
+
+        if (hpRecv != null) hpRecv.ReceiveHp(-this.damage);
+        if (fireEffRecv != null) fireEffRecv.ReceiveFireEff(this.fireEffDuration, this.fireDamage);
+        if (poisonEffRecv != null) poisonEffRecv.ReceivePoisonEff(this.poisonEffDuration, this.poisonDamage);
+    }
 }

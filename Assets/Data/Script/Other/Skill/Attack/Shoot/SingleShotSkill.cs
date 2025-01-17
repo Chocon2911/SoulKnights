@@ -7,7 +7,9 @@ using UnityEngine;
 public class SingleShotSkill : AttackSkill
 {
     //========================================Constructor=========================================
-    public SingleShotSkill(int manaCost, int hpCost, Cooldown skillCD) : base(manaCost, hpCost, skillCD)
+    public SingleShotSkill(int manaCost, int hpCost, Cooldown skillCD, 
+        float forcePower, float pushBackDuration) : 
+        base(manaCost, hpCost, skillCD, forcePower, pushBackDuration)
     { }
 
     public SingleShotSkill(SingleShotSkillSO so, float waitTime) : 

@@ -2,9 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AttackSkillSO : SkillSO
+public class AttackSkillSO : SkillSO
 {
-    [Header("Shoot")]
+    //==========================================Variable==========================================
+    [Header("Attack")]
+    [SerializeField] private float forcePower;
+    [SerializeField] private float pushBackDuration;
     [SerializeField] private float attackRate;
+
+    //==========================================Variable==========================================
+    public float ForcePower => forcePower;
+    public float PushBackDuration => pushBackDuration;
     public float AttackRate => attackRate;
 }

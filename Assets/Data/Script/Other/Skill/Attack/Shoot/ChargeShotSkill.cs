@@ -9,8 +9,9 @@ public class ChargeShotSkill : AttackSkill
     [SerializeField] private Transform tempBulletObj;
 
     //========================================Constructor=========================================
-    public ChargeShotSkill(int manaCost, int hpCost, Cooldown skillCD) :
-        base(manaCost, hpCost, skillCD)
+    public ChargeShotSkill(int manaCost, int hpCost, Cooldown skillCD, 
+        float forcePower, float pushBackDuration) :
+        base(manaCost, hpCost, skillCD, forcePower, pushBackDuration)
     {
         this.tempBulletObj = null;
     }
@@ -33,11 +34,14 @@ public class ChargeShotSkill : AttackSkill
         }
 
         bullet.SetShooter(owner);
+        SkillUtil.Instance.ConsumeHp(hpRecv, this);
+        SkillUtil.Instance.ConsumeMana(manaRecv, this);
     }
 
-    public void Shoot(HpReceiver hpRecv, ManaReceiver manaRecv)
+    public void Shoot(HpReceiver hpRecv, ManaReceiver manaRecv, ChargableBullet bullet)
     {
         if (this.tempBulletObj == null) return;
-        // TODO: Get ChargableBullet
+        bullet.FinishCharge();
+        this.skillCD.ResetStatus();
     }
 }

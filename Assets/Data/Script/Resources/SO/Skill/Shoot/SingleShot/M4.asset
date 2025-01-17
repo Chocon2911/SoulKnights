@@ -15,4 +15,6 @@ MonoBehaviour:
   manaCost: 0
   hpCost: 0
   skillRechargeTime: 0
-  fireRate: 10
+  forcePower: 0
+  pushBackDuration: 0
+  attackRate: 10

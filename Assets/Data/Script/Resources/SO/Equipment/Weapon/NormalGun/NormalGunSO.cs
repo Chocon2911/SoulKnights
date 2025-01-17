@@ -7,10 +7,10 @@ public class NormalGunSO : WeaponSO
 {
     //==========================================Variable==========================================
     [Header("NormalGun")]
-    [SerializeField] private SingleShotSkillSO skill;
+    [SerializeField] private AttackSkillSO skill;
     [SerializeField] private Transform bullet;
 
     //============================================Get=============================================
-    public SingleShotSkillSO Skill => skill;
+    public AttackSkillSO Skill => skill;
     public Transform Bullet => bullet;
 }

@@ -17,15 +17,10 @@ public class ChargableBullet : Bullet
     [SerializeField] private float maxSize;
 
     [Header("Increase Speed")]
-    [SerializeField] private float minSpeed;
-    [SerializeField] private float maxSpeed;
- 
-    [Header("Increase Damage")]
-    [SerializeField] private int minDamage;
-    [SerializeField] private int maxDamage;
+    [SerializeField] private List<float> moveSpeeds;
 
-    //==========================================Get Set===========================================
-    public ChargeStat ChargeStat { get => this.chargeStat; }
+    [Header("Increase Damage")]
+    [SerializeField] private List<int> damages;
 
     //===========================================Unity============================================
     protected override void OnEnable()
@@ -36,13 +31,18 @@ public class ChargableBullet : Bullet
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+        this.ChargeFUpdate();
     }
 
     //===========================================Method===========================================
     public virtual void FinishCharge()
     {
         this.chargeStat.FinishCharge();
+        this.damage = this.damages[this.chargeStat.TempGrade];
+        this.moveSpeed = this.moveSpeeds[this.chargeStat.TempGrade];
         this.bodyCollider.enabled = true;
+        this.canMove = true;
+        this.canDespawnByTime = true;
     }
 
     protected virtual void ChargeFUpdate()
@@ -57,5 +57,7 @@ public class ChargableBullet : Bullet
         base.Respawn();
         this.chargeStat.ActivateCharge();
         this.bodyCollider.enabled = false;
+        this.canDespawnByTime = false;
+        this.canMove = false;
     }
 }

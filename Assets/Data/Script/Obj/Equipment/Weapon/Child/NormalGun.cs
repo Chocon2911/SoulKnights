@@ -33,7 +33,8 @@ public class NormalGun : Weapon, IAttackable
     public void Attack(HpReceiver hpRecv, ManaReceiver manaRecv, int state)
     {
         if (state <= 0) return;
-        this.shootSkill.Shooting(hpRecv, manaRecv, this.bullet, transform, transform.position, transform.rotation.z);
+        this.shootSkill.Shooting(hpRecv, manaRecv, this.bullet, transform, 
+            transform.position, transform.eulerAngles.z);
     }
 
     //========================================Shoot Skill=========================================
@@ -44,7 +45,7 @@ public class NormalGun : Weapon, IAttackable
 
     private void DefaultShootSkill(NormalGunSO normalGunSO)
     {
-        this.shootSkill = new SingleShotSkill(normalGunSO.Skill, Time.fixedDeltaTime);
+        this.shootSkill = new SingleShotSkill((SingleShotSkillSO)normalGunSO.Skill, Time.fixedDeltaTime);
         this.shootSkill.IsRecharging = true;
     }
 

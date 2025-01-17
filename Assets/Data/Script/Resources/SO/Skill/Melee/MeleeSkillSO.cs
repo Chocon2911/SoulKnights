@@ -14,6 +14,4 @@ public class MeleeSkillSO : AttackSkillSO
     //============================================Get=============================================
     public float AttackDuration => attackDuration;
     public int Damage => damage;
-    public float ForcePower => forcePower;
-    public float PushBackDuration => pushBackDuration;
 }

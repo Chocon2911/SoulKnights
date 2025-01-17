@@ -8,8 +8,6 @@ public class MeleeSkill : AttackSkill
     [Header("Melee")]
     [SerializeField] private Cooldown attackCD;
     [SerializeField] private int damage;
-    [SerializeField] private float forcePower;
-    [SerializeField] private float pushBackDuration;
     [SerializeField] private bool isAttacking;
 
     //==========================================Get Set===========================================
@@ -22,12 +20,10 @@ public class MeleeSkill : AttackSkill
     //========================================Constructor=========================================
     public MeleeSkill(int manaCost, int hpCost, Cooldown skillCD, Cooldown attackCD, 
         int damage, float forcePower, float pushBackDuration) : 
-        base(manaCost, hpCost, skillCD) 
+        base(manaCost, hpCost, skillCD, forcePower, pushBackDuration)
     {
         this.attackCD = attackCD;
         this.damage = damage;
-        this.forcePower = forcePower;
-        this.pushBackDuration = pushBackDuration;
         this.isAttacking = false;
         this.isRecharging = false;
     }
@@ -89,12 +85,5 @@ public class MeleeSkill : AttackSkill
     private void DealDamage(HpReceiver receiver)
     {
         receiver.ReceiveHp(-this.damage);
-    }
-
-    private void PushBack(PushBackReceiver receiver, Vector2 mainObjPos, Vector2 targetPos)
-    {
-        Vector2 dir = (mainObjPos - targetPos).normalized;
-        Vector2 pushBackForce = dir * this.forcePower;
-        receiver.ReceiveForce(pushBackForce, this.pushBackDuration);
     }
 }

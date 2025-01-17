@@ -14,8 +14,9 @@ public class ShotgunSkill : AttackSkill
     public float SpreadAngle { get => spreadAngle; set => spreadAngle = value; }
 
     //========================================Constructor=========================================
-    public ShotgunSkill(int manaCost, int hpCost, Cooldown skillCD, int bulletCount, float spreadAngle)
-        : base(manaCost, hpCost, skillCD)
+    public ShotgunSkill(int manaCost, int hpCost, Cooldown skillCD, 
+        float forcePower, float pushBackDuration, int bulletCount, float spreadAngle)
+        : base(manaCost, hpCost, skillCD, forcePower, pushBackDuration)
     {
         this.manaCost = manaCost;
         this.hpCost = hpCost;

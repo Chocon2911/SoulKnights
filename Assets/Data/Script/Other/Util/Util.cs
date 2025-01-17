@@ -57,4 +57,15 @@ public class Util
         float y = this.RandomFloat(center.y - yLimit, center.y + yLimit);
         return new Vector2(x, y);
     }
+
+    //==========================================Increase==========================================
+    public int Increase(int min, int max, float totalTime, float waitTime)
+    {
+        return (int)(min + (max - min) * ((Time.time - totalTime) / waitTime));
+    }
+
+    public float Increase(float min, float max, float totalTime, float waitTime)
+    {
+        return min + (max - min) * ((Time.time - totalTime) / waitTime);
+    }
 }

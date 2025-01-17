@@ -16,8 +16,9 @@ public class BurstSkill : AttackSkill
     public int BurstCount { get => burstCount; set => burstCount = value; }
 
     //========================================Constructor=========================================
-    public BurstSkill(int manaCost, int hpCost, Cooldown skillCD, Cooldown burstCD, int burstCount) : 
-        base(manaCost, hpCost, skillCD)
+    public BurstSkill(int manaCost, int hpCost, Cooldown skillCD, Cooldown burstCD, 
+        float forcePower, float pushBackDuration, int burstCount) : 
+        base(manaCost, hpCost, skillCD, forcePower, pushBackDuration)
     {
         this.burstCD = burstCD;
         this.burstCount = burstCount;

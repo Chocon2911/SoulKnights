@@ -89,40 +89,6 @@ public class Crep : NPC, HpReceiver, ManaReceiver
             this.identifyTarget.Target.position);
     }
 
-    //========================================Hp Receiver=========================================
-    public int GetCurrHp()
-    {
-        return this.hp;
-    }
-
-    public FactionType GetFactionType()
-    {
-        return this.faction;
-    }
-
-    public void ReceiveHp(int hp)
-    {
-        this.hp += hp;
-        if (this.hp > this.maxHp) this.hp = this.maxHp;
-
-        if (this.hp <= 0)
-        {
-            this.hp = 0;
-            this.isDead = true;
-        }
-    }
-
-    //=======================================Mana Receiver========================================
-    public void ReceiveMana(int mana)
-    {
-        return;
-    }
-
-    public int GetCurrMana()
-    {
-        return 0;
-    }
-
     //==========================================Override==========================================
     protected override void DefaultStat()
     {

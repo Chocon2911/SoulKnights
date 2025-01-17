@@ -218,18 +218,18 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     //============================================================================================
 
     //======================================Damage Receiver=======================================
-    FactionType DamageReceiver.GetFactionType()
+    public override FactionType GetFactionType()
     {
         return this.factionType;
     }
 
     //========================================Hp Receiver=========================================
-    int HpHolder.GetCurrHp()
+    public override int GetCurrHp()
     {
         return this.hp;
     }
 
-    void HpReceiver.ReceiveHp(int hp)
+    public override void ReceiveHp(int hp)
     {
         if (this.hp + hp > this.maxHp) this.hp = this.maxHp;
         else this.hp += hp;
@@ -242,12 +242,12 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     }
 
     //=======================================Mana Receiver========================================
-    int ManaHolder.GetCurrMana()
+    public override int GetCurrMana()
     {
         return this.mana;
     }
 
-    void ManaReceiver.ReceiveMana(int mana)
+    public override void ReceiveMana(int mana)
     {
         if (this.mana + mana > this.maxMana) this.mana = this.maxMana;
         else this.mana += mana;

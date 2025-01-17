@@ -183,7 +183,7 @@ MonoBehaviour:
       timer: 0
       waitTime: 0.001
       isReady: 0
-    isCharging: 1
+    isRecharging: 0
   bullet: {fileID: 8971958095379382294, guid: d031a30c1fb503d4f8c17d3ddadd486b, type: 3}
 --- !u!1 &44341234
 GameObject:
@@ -969,7 +969,7 @@ MonoBehaviour:
       timer: 0
       waitTime: 0.001
       isReady: 0
-    isCharging: 1
+    isRecharging: 0
   bullet: {fileID: 8971958095379382294, guid: d031a30c1fb503d4f8c17d3ddadd486b, type: 3}
 --- !u!1 &515064713
 GameObject:
@@ -1846,7 +1846,7 @@ MonoBehaviour:
       timer: 0
       waitTime: 0
       isReady: 0
-    isCharging: 0
+    isRecharging: 0
   bullet: {fileID: 0}
 --- !u!1 &1178619221
 GameObject:
@@ -2294,7 +2294,7 @@ MonoBehaviour:
       timer: 0
       waitTime: 0
       isReady: 0
-    isCharging: 0
+    isRecharging: 0
   bullet: {fileID: 0}
 --- !u!1 &1391256809
 GameObject:
@@ -2579,7 +2579,7 @@ MonoBehaviour:
       timer: 0
       waitTime: 0
       isReady: 0
-    isCharging: 0
+    isRecharging: 0
   bullet: {fileID: 0}
 --- !u!1 &1603562148
 GameObject:
@@ -3039,7 +3039,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5792449938094303587, guid: d031a30c1fb503d4f8c17d3ddadd486b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7039157306146655865, guid: d031a30c1fb503d4f8c17d3ddadd486b, type: 3}
       propertyPath: damgableTypes.Array.size

@@ -5,7 +5,7 @@ using UnityEngine.TextCore.Text;
 
 [RequireComponent(typeof(CapsuleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public abstract class BaseCharacter : BaseObj
+public abstract class BaseCharacter : BaseObj, HpReceiver, ManaReceiver
 {
     //==========================================Variable==========================================
     [Space(25)]
@@ -78,6 +78,17 @@ public abstract class BaseCharacter : BaseObj
         this.bodyCollider.isTrigger = false;
         this.rb.drag = 10;
     }
+
+    //======================================Damagae Receiver======================================
+    public abstract FactionType GetFactionType();
+
+    //========================================Hp Receiver=========================================
+    public abstract void ReceiveHp(int hp);
+    public abstract int GetCurrHp();
+
+    //=======================================Mana Receiver========================================
+    public abstract void ReceiveMana(int mana);
+    public abstract int GetCurrMana();
 
     //==========================================Override==========================================
     protected override void DefaultStat()

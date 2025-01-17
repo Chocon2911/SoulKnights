@@ -22,13 +22,6 @@ public class NormalBullet : Bullet
     {
         if (!this.canMove) return;
         this.rb.velocity = Vector2.zero;
-        MovementUtil.Instance.MoveForward(this.rb, this.moveSpeed);   
-    }
-
-    //==========================================Override==========================================
-    protected override void OnColliding(Transform collidedObj)
-    {
-        base.OnColliding(collidedObj);
-        BulletSpawner.Instance.Despawn(transform);
+        MovementUtil.Instance.MoveForward(this.rb, this.moveSpeed);
     }
 }

@@ -42,13 +42,15 @@ public class SkillUtil
         return newBullet;
     }
 
-    public List<Transform> Shotgun(Transform bullet, int bulletCount, Vector3 spawnPos, float shootAngle)
+    public List<Transform> Shotgun(Transform bullet, int bulletCount, Vector3 spawnPos, 
+        float shootAngle, float spreadAngle)
     {
         float halfAngle = shootAngle / 2;
         List<Transform> bullets = new List<Transform>();
         for (int i = 0; i < bulletCount; i++)
         {
-            Quaternion spawnRot = Quaternion.Euler(0, 0, spawnPos.z + (i * shootAngle) - halfAngle);
+            // BulletAngle = (n * SpreadAngle / BulletCount) - (ShootAngle / 2)
+            Quaternion spawnRot = Quaternion.Euler(0, 0, (i * spreadAngle / bulletCount) - halfAngle);
             Transform newBullet = BulletSpawner.Instance.SpawnByObj(bullet, spawnPos, spawnRot);
             if (newBullet == null) return null;
 

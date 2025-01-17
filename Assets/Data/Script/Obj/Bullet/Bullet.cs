@@ -5,7 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
-public abstract class Bullet : BaseObj, HpSender
+public abstract class Bullet : BaseObj
 {
     //==========================================Variable==========================================
     [Space(25)]
@@ -16,6 +16,7 @@ public abstract class Bullet : BaseObj, HpSender
     [SerializeField] protected float moveSpeed;
     [SerializeField] protected int damage;
     [SerializeField] protected List<FactionType> damgableTypes;
+    [SerializeField] protected bool canPierce;
 
     [Header("// Movement")]
     [SerializeField] protected bool canMove;
@@ -27,7 +28,6 @@ public abstract class Bullet : BaseObj, HpSender
     [Header("// Poison Effect")]
     [SerializeField] protected float poisonEffDuration;
     [SerializeField] protected int poisonDamage;
-
 
     [Header("// Despawn By Time")]
     [SerializeField] protected Cooldown despawnByTimeCD;
@@ -60,6 +60,12 @@ public abstract class Bullet : BaseObj, HpSender
     public List<FactionType> DamagableTypes
     {
         get => damgableTypes;
+    }
+
+    public bool CanPierce
+    {
+        get => canPierce;
+        set => canPierce = value;
     }
 
     // Movement
@@ -153,13 +159,6 @@ public abstract class Bullet : BaseObj, HpSender
     protected virtual void DefaultMovement()
     {
         this.canMove = false;
-    }
-
-    //==========================================HpSender==========================================
-    void HpSender.SendHp(HpReceiver receiver) 
-    {
-        receiver.ReceiveHp(this.damage);
-        DespawnUtil.Instance.Despawn(transform, BulletSpawner.Instance);
     }
 
     //======================================Despawn By Time=======================================
@@ -263,5 +262,9 @@ public abstract class Bullet : BaseObj, HpSender
         if (hpRecv != null) hpRecv.ReceiveHp(-this.damage);
         if (fireEffRecv != null) fireEffRecv.ReceiveFireEff(this.fireEffDuration, this.fireDamage);
         if (poisonEffRecv != null) poisonEffRecv.ReceivePoisonEff(this.poisonEffDuration, this.poisonDamage);
+
+        if (hpRecv == null && fireEffRecv == null && poisonEffRecv == null) return;
+        if (this.canPierce) return;
+        DespawnUtil.Instance.Despawn(transform, BulletSpawner.Instance);
     }
 }

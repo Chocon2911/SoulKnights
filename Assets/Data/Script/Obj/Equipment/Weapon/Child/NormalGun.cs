@@ -9,7 +9,7 @@ public class NormalGun : Weapon, IAttackable
     [Header("//============================================================================================")]
     [Space(25)]
     [Header("===Normal Gun===")]
-    [SerializeField] private ShootSkill shootSkill;
+    [SerializeField] private SingleShotSkill shootSkill;
     [SerializeField] private Transform bullet;
 
     //===========================================Unity============================================
@@ -21,7 +21,7 @@ public class NormalGun : Weapon, IAttackable
 
     private void OnEnable()
     {
-        this.shootSkill.IsCharging = true;
+        this.shootSkill.IsRecharging = true;
     }
 
     private void FixedUpdate()
@@ -33,7 +33,7 @@ public class NormalGun : Weapon, IAttackable
     public void Attack(HpReceiver hpRecv, ManaReceiver manaRecv, int state)
     {
         if (state <= 0) return;
-        this.shootSkill.Shooting(hpRecv, manaRecv, this.bullet, transform, transform.position, transform.rotation);
+        this.shootSkill.Shooting(hpRecv, manaRecv, this.bullet, transform, transform.position, transform.rotation.z);
     }
 
     //========================================Shoot Skill=========================================
@@ -44,8 +44,8 @@ public class NormalGun : Weapon, IAttackable
 
     private void DefaultShootSkill(NormalGunSO normalGunSO)
     {
-        this.shootSkill = new ShootSkill(normalGunSO.Skill, Time.fixedDeltaTime);
-        this.shootSkill.IsCharging = true;
+        this.shootSkill = new SingleShotSkill(normalGunSO.Skill, Time.fixedDeltaTime);
+        this.shootSkill.IsRecharging = true;
     }
 
     //==========================================Override==========================================

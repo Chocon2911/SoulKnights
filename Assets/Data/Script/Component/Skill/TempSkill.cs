@@ -14,12 +14,15 @@ public abstract class TempSkill : HuyMonoBehaviour
 
     //==========================================Get Set===========================================
     public int ManaCost => manaCost;
-
     public int HpCost => hpCost;
-
     public Cooldown SkillCD => skillCD;
-
     public bool IsRecharging => isRecharging;
+
+    //===========================================Unity============================================
+    protected virtual void FixedUpdate()
+    {
+        if (this.isRecharging) this.Recharging();
+    }
 
     //===========================================Method===========================================
     protected void Recharging()
@@ -30,6 +33,7 @@ public abstract class TempSkill : HuyMonoBehaviour
     protected void ResetSkillCD()
     {
         this.skillCD.ResetStatus();
+        this.isRecharging = true;
     }
 
     protected void DefaultSkillStat(int manaCost, int hpCost, Cooldown skillCD, bool isRecharging)
@@ -42,7 +46,5 @@ public abstract class TempSkill : HuyMonoBehaviour
 
     //==========================================Abstract==========================================
     public abstract void UseSkill();
-    public abstract void MyUpdate();
-    public abstract void MyFixedUpdate();
     public abstract void ResetSkill();
 }

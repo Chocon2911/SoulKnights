@@ -62,16 +62,6 @@ public class TempDualWieldSkill : TempSkill
 
 
     //==========================================Override==========================================
-    public override void MyFixedUpdate()
-    {
-        
-    }
-
-    public override void MyUpdate()
-    {
-        
-    }
-
     public override void ResetSkill()
     {
 

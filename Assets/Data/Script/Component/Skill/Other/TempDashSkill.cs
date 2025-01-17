@@ -12,6 +12,21 @@ public class TempDashSkill : TempSkill
     [SerializeField] private float dashSpeed;
     [SerializeField] private bool isDashing;
 
+    //===========================================Unity============================================
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        if (this.isDashing) this.Dashing();
+        if (this.dashCD.IsReady) this.FinishDash();
+    }
+
+    private void Update()
+    {
+        if (this.user.CanUseSkill(this) 
+            && this.user.CanDash() 
+            && this.skillCD.IsReady) this.UseSkill();
+    }
+
     //===========================================Method===========================================
     private void Dashing()
     {
@@ -27,21 +42,8 @@ public class TempDashSkill : TempSkill
     }
 
     //==========================================Override==========================================
-    public override void MyFixedUpdate()
-    {
-        if (this.isRecharging) this.Recharging();
-        if (this.isDashing) this.Dashing();
-        if (this.dashCD.IsReady) this.FinishDash();
-    }
-
-    public override void MyUpdate()
-    {
-        
-    }
-
     public override void UseSkill()
     {
-        if (!this.user.CanUseSkill(this) || !this.user.CanDash() || !this.skillCD.IsReady) return;
         this.dashDir = this.user.GetDashDir();
 
         if (dashDir == Vector2.zero) return;

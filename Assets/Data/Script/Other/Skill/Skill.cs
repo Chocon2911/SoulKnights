@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class Skill
+public abstract class Skill
 {
     //==========================================Variable==========================================
     [SerializeField] private int manaCost;
@@ -44,4 +44,8 @@ public class Skill
         if (player.Mana < this.manaCost || player.Hp <= this.hpCost) { Debug.Log("Hello"); return false; }
         return true;
     }
+
+    //public abstract void UseSkill();
+    //public abstract void MyFixedUpdate();
+    //Public abstract void MyUpdate();
 }

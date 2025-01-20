@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver, FireEffReceiver
+public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver, FireEffReceiver, WeaponUser,
+    DualWieldUser
 {
     protected enum PlayerState
     {
@@ -30,9 +31,12 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     [Header("// Dash Skill")]
     [SerializeField] protected DashSkill dashSkillNew;
 
-    [Header("// Weapon")]
+    [Header("// CharacterSkill")]
+    [SerializeField] protected TempSkill characterSkill;
+
+    [Header("// TempWeapon")]
+    [SerializeField] protected List<TempWeapon> tempWeapons;
     [SerializeField] protected Transform rightArm;
-    [SerializeField] protected List<Weapon> weapons;
     [SerializeField] protected int maxWeaponSlot;
     [SerializeField] protected int currWeaponSlot;
 
@@ -50,9 +54,20 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     //===========================================Unity============================================
     protected override void LoadComponents()
     {
+        foreach (TempWeapon tempWeapon in this.tempWeapons) tempWeapon.SetUser(this);
         base.LoadComponents();
         this.LoadComponent(ref this.rightArm, transform.Find("RightArm"), "LoadRightArm()");
-        this.LoadComponent(ref this.weapons, transform.Find("Weapon"), "LoadWeapons()");
+        this.LoadComponent(ref this.tempWeapons, transform.Find("Weapon"), "LoadWeapons()");
+        this.LoadComponent(ref this.characterSkill, transform.Find("CharacterSkill"),
+            "LoadCharacterSkill()");
+
+        if (this.characterSkill != null)
+        {
+            this.characterSkill.SetOwner(transform);
+            this.characterSkill.SetSkillOrder(1);
+            this.characterSkill.MyLoadComponents();
+        }
+
         // Default
         this.DefaultStat();
     }
@@ -67,19 +82,36 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
 
     protected virtual void Update()
     {
-        this.CheckDashUpdateNew();
+        // Dash Skill
+        this.CheckDashUpdate();
+
+        // Character Skill
+        this.characterSkill.MyUpdate();
     }
 
     protected virtual void FixedUpdate()
     {
+        // Stat
         this.PoisonEffHandling();
         this.FireEffHandling();
+
+        // Movement
         this.Moving();
-        this.CheckDashFixedUpdateNew();
-        this.WeaponHolding();
-        this.WeaponHandling();
+
+        // Dash Skill
+        this.CheckDashFixedUpdate();
+
+        // Character Skill
+        this.characterSkill.MyFixedUpdate();
+
+        // Amor Regen
         this.AmorRegenFixedUpdate();
+
+        // Animation
         this.AnimationHandling();
+
+        // Weapon
+        this.WeaponHolding();
     }
 
 
@@ -115,7 +147,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     protected virtual void MoveByKeyboard()
     {
         Vector2 moveDir = InputManager.Instance.MoveDir.normalized;
-        
+
         if (moveDir == Vector2.zero) return;
         this.playerState = PlayerState.MOVE;
 
@@ -144,12 +176,12 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
 
     //============================================Dash============================================
 
-    protected virtual void CheckDashUpdateNew()
+    protected virtual void CheckDashUpdate()
     {
         if (InputManager.Instance.SpaceState == 1) this.dashSkillNew.UseDash(this, this, InputManager.Instance.MoveDir);
     }
 
-    protected virtual void CheckDashFixedUpdateNew()
+    protected virtual void CheckDashFixedUpdate()
     {
         this.dashSkillNew.DashRecharging();
         this.dashSkillNew.FinishDash();
@@ -183,32 +215,70 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.amorRegenSkill.IsRegening = false;
     }
 
+    //=========================================Dual Wield=========================================
+    public TempWeapon GetMainWeapon()
+    {
+        return this.tempWeapons[this.currWeaponSlot - 1];
+    }
+
+    public bool CanUseDualWield()
+    {
+        if (this.tempWeapons.Count <= 0
+            || this.currWeaponSlot > this.tempWeapons.Count
+            || this.tempWeapons[this.currWeaponSlot - 1] == null
+            || InputManager.Instance.ShiftState <= 0) return false;
+        else return true;
+    }
+
+    public Vector2 GetOwnerPos()
+    {
+        return transform.position;
+    }
+
+    public Vector2 GetTargetPos()
+    {
+        return InputManager.Instance.MousePos;
+    }
+
 
 
     //============================================================================================
     //===========================================Weapon===========================================
     //============================================================================================
-    protected void PickUpWeapon(Weapon weapon)
+
+    //========================================Weapon User=========================================
+    public bool CanUseSkill(TempSkill skill)
     {
-        this.weapons.Add(weapon);
-        this.maxWeaponSlot++;
+        if (this.mana < skill.ManaCost) return false;
+        else return true;
     }
 
+    public int GetFirstSkillState()
+    {
+        return InputManager.Instance.LeftClickState;
+    }
+
+    public int GetSecondSkillState()
+    {
+        return InputManager.Instance.RightClickState;
+    }
+
+    public void ConsumePower(TempSkill skill)
+    {
+        this.mana -= skill.ManaCost;
+        
+        if (this.hp - skill.HpCost <= 0) return;
+        else this.hp -= skill.HpCost;
+    }
+
+    //========================================Temp Weapon=========================================
     protected virtual void WeaponHolding()
     {
-        if (this.weapons.Count < this.currWeaponSlot 
-            || this.weapons[this.currWeaponSlot - 1] == null) return;
+        if (this.tempWeapons.Count < this.currWeaponSlot
+            || this.tempWeapons[this.currWeaponSlot - 1] == null) return;
 
-        WeaponUtil.Instance.WeaponHolding(this.weapons[this.currWeaponSlot - 1], 
+        WeaponUtil.Instance.WeaponHolding(this.tempWeapons[this.currWeaponSlot - 1], 
             this.rightArm, transform.position, InputManager.Instance.MousePos);
-    }
-
-    protected virtual void WeaponHandling()
-    {
-        if (this.weapons[this.currWeaponSlot - 1] == null) return;
-        WeaponUtil.Instance.WeaponHandling(this.weapons[this.currWeaponSlot - 1], 
-            InputManager.Instance.LeftClickState, InputManager.Instance.RightClickState,
-            this, this);
     }
 
 

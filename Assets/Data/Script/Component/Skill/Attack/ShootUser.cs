@@ -4,8 +4,7 @@ using UnityEngine;
 
 public interface ShootUser : SkillUser
 {
-    bool CanShoot();
+    List<bool> CanShoot();
     float GetShootAngle();
     Vector3 GetBulletPos();
-    Transform GetShooter();
 }

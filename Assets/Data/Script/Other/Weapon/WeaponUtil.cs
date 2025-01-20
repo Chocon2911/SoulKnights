@@ -51,4 +51,11 @@ public class WeaponUtil
         float angle = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg;
         weapon.HoldingWeapon(weaponHolder, angle);
     }
+
+    public void WeaponHolding(TempWeapon weapon, Transform weaponHolder, Vector2 ownerPos, Vector2 targetPos)
+    {
+        Vector2 distance = targetPos - ownerPos;
+        float angle = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg;
+        weapon.Holding(weaponHolder, angle);
+    }
 }

@@ -11,14 +11,6 @@ public class TempBurstSkill : TempShootSkill
     [SerializeField] private int tempBurstCount;
     [SerializeField] private bool isBursting;
 
-    //===========================================Unity============================================
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-        this.Bursting();
-        this.DoShoot();
-    }
-
     //===========================================Method===========================================
     private void Bursting()
     {
@@ -34,22 +26,24 @@ public class TempBurstSkill : TempShootSkill
 
         Quaternion bulletRot = Quaternion.Euler(0, 0, this.user.GetShootAngle());
         Transform newBullet = SkillUtil.Instance.Shoot(bulletObj, this.user.GetBulletPos(), bulletRot);
-        if (newBullet == null) return;
 
+        if (newBullet == null) return;
         Bullet bullet = newBullet.GetComponent<Bullet>();
+
         if (bullet == null)
         {
             Debug.LogError("Bullet is null", transform.gameObject);
             return;
         }
 
-        bullet.SetShooter(this.user.GetShooter());
+        bullet.SetShooter(this.owner);
         newBullet.gameObject.SetActive(true);
     }
 
     private void FinishBurst()
     {
         this.isBursting = false;
+        this.tempBurstCount = this.burstCount;
         this.ResetSkillCD();
     }
 
@@ -59,6 +53,12 @@ public class TempBurstSkill : TempShootSkill
     }
 
     //==========================================Override==========================================
+    public override void MyFixedUpdate()
+    {
+        base.MyFixedUpdate();
+        this.Bursting();
+    }
+
     public override void ResetSkill()
     {
         this.ResetSkillCD();

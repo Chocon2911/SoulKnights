@@ -9,11 +9,27 @@ public abstract class TempShootSkill : TempSkill
     [SerializeField] protected ShootUser user;
     [SerializeField] protected Transform bulletObj;
 
-    //===========================================Unity============================================
-    protected virtual void Update()
+    protected override void LoadComponents()
+    {
+        base.LoadComponents();
+        this.LoadComponent(ref this.user, this.owner, "LoadUser()");
+    }
+
+    //==========================================Override==========================================
+    public override void MyLoadComponents()
+    {
+        base.MyLoadComponents();
+        this.LoadComponent(ref this.user, this.owner, "LoadUser()");
+    }
+    public override void MyFixedUpdate()
+    {
+        
+    }
+
+    public override void MyUpdate()
     {
         if (this.user.CanUseSkill(this)
-            && this.user.CanShoot()
+            && this.user.CanShoot()[this.skillOrder - 1]
             && this.skillCD.IsReady) this.UseSkill();
     }
 }

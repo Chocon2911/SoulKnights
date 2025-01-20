@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 
-public class TempShotgunSkill : TempShootSkill
+public class TempAdvanceShotgunSkill : TempShootSkill
 {
     //==========================================Variable==========================================
     [Header("Shotgun")]
-    [SerializeField] private int bulletCount;
-    [SerializeField] private float spreadAngle;
+    [SerializeField] private List<float> spreadAngles;
 
     //==========================================Override==========================================
     public override void ResetSkill()
@@ -17,23 +17,16 @@ public class TempShotgunSkill : TempShootSkill
 
     public override void UseSkill()
     {
-        List<Transform> newBullets = SkillUtil.Instance.Shotgun(bulletObj, this.bulletCount, 
-            this.user.GetBulletPos(), this.user.GetShootAngle(), spreadAngle);
-
-        if (newBullets == null)
+        for (int i = 0; i < this.spreadAngles.Count; i++)
         {
-            Debug.LogError("ShotgunBullet List is null", transform.gameObject);
-            return;
-        }
-
-        foreach (Transform newBullet in newBullets)
-        {
+            Quaternion bulletRot = Quaternion.Euler(0, 0, this.user.GetShootAngle() + this.spreadAngles[i]);
+            Transform newBullet = SkillUtil.Instance.Shoot(this.bulletObj, this.user.GetBulletPos(), bulletRot);
             if (newBullet == null) return;
-            Bullet bullet = newBullet.GetComponent<Bullet>();
 
+            Bullet bullet = newBullet.GetComponent<Bullet>();
             if (bullet == null)
             {
-                Debug.LogError("ShotgunBullet is null", transform.gameObject);
+                Debug.LogError("Bullet is null", transform.gameObject);
                 return;
             }
 

@@ -42,6 +42,19 @@ public class TempDashSkill : TempSkill
     }
 
     //==========================================Override==========================================
+    public override void MyUpdate()
+    {
+        if (this.user.CanUseSkill(this)
+            && this.user.CanDash()
+            && this.skillCD.IsReady) this.UseSkill();
+    }
+
+    public override void MyFixedUpdate()
+    {
+        if (this.isDashing) this.Dashing();
+        if (this.dashCD.IsReady) this.FinishDash();
+    }
+
     public override void UseSkill()
     {
         this.dashDir = this.user.GetDashDir();

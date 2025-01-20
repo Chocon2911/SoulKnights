@@ -4,9 +4,8 @@ using UnityEngine;
 
 public interface DualWieldUser : SkillUser
 {
-    Weapon GetMainWeapon();
+    TempWeapon GetMainWeapon();
     bool CanUseDualWield();
-    int GetLeftClickState();
-    int GetRightClickState();
     Vector2 GetOwnerPos();
+    Vector2 GetTargetPos();
 }

@@ -23,7 +23,8 @@ public class TempSingleShotSkill : TempShootSkill
             return;
         }
 
-        bullet.SetShooter(this.user.GetShooter());
+        bullet.SetShooter(this.owner);
+        newBullet.gameObject.SetActive(true);
         this.user.ConsumePower(this);
         this.ResetSkillCD();
     }

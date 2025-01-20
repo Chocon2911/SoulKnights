@@ -53,6 +53,12 @@ public class TempBurstSkill : TempShootSkill
     }
 
     //==========================================Override==========================================
+    public override void MyLoadComponents()
+    {
+        base.MyLoadComponents();
+        this.LoadSO(ref this.so, "SO/Skill/Attack/Shoot/Burst/" + this.owner.name);
+    }
+
     public override void MyFixedUpdate()
     {
         base.MyFixedUpdate();
@@ -61,7 +67,7 @@ public class TempBurstSkill : TempShootSkill
 
     public override void ResetSkill()
     {
-        this.ResetSkillCD();
+        base.ResetSkill();
         this.burstCD.ResetStatus();
         this.tempBurstCount = this.burstCount;
         this.isBursting = false;
@@ -74,5 +80,20 @@ public class TempBurstSkill : TempShootSkill
         this.tempBurstCount = this.burstCount;
         this.user.ConsumePower(this);
         this.skillCD.ResetStatus();
+    }
+
+    public override void DefaultStat()
+    {
+        base.DefaultStat();
+        BurstSkillSO burstSO = (BurstSkillSO)this.so;
+        if (burstSO == null)
+        {
+            Debug.LogError("BurstSkillSO is null", transform.gameObject);
+            return;
+        }
+
+        this.burstCount = burstSO.BurstCount;
+        this.burstCD = new Cooldown(burstSO.BurstInterval, Time.fixedDeltaTime);
+        this.tempBurstCount = this.burstCount;
     }
 }

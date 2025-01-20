@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Weapon", menuName = "SO/Equipment/Weapon")]
 public class WeaponSO : ObjSO
 {
     //==========================================Variable==========================================

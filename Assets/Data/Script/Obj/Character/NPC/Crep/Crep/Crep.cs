@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Crep : NPC, HpReceiver, ManaReceiver
+public class Crep : NPC, HpReceiver, ManaReceiver, WeaponUser
 {
     //==========================================Variable==========================================
     [Space(25)]
@@ -17,15 +17,18 @@ public class Crep : NPC, HpReceiver, ManaReceiver
 
     [Header("Weapon")]
     [SerializeField] protected Transform rightArm;
-    [SerializeField] protected Weapon weapon;
+    [SerializeField] protected TempWeapon weapon;
 
     //===========================================Unity============================================
     protected override void LoadComponents()
     {
         base.LoadComponents();
         this.LoadComponent(ref this.rightArm, transform.Find("RightArm"), "LoadRightArm()");
-        this.LoadChildComponent(ref this.weapon, transform.Find("WeaponHolder"), "LoadWeapon()");
+        this.LoadChildComponent(ref this.weapon, transform.Find("Weapon"), "LoadWeapon()");
         this.LoadSO(ref this.so, "SO/Character/NPC/Crep/" + transform.name);
+
+        // Weapon
+        if (this.weapon != null) this.weapon.SetUser(this);
 
         this.DefaultStat();
     }
@@ -43,7 +46,6 @@ public class Crep : NPC, HpReceiver, ManaReceiver
         this.Move();
         this.MoveRandomRecharge();
         this.CheckReachGoal();
-        this.WeaponHandling();
         this.WeaponHolding();
     }    
 
@@ -75,13 +77,31 @@ public class Crep : NPC, HpReceiver, ManaReceiver
         }
     }
 
-    //===========================================Weapon===========================================
-    protected virtual void WeaponHandling()
+    //========================================Weapon User=========================================
+    public bool CanUseSkill(TempSkill skill)
     {
-        if (this.identifyTarget.Target == null || this.weapon == null) return;
-        WeaponUtil.Instance.WeaponHandling(this.weapon, 1, 1, this, this);
+        if (this.hp <= skill.HpCost) return false;
+        else return true;
     }
 
+    public int GetFirstSkillState()
+    {
+        if (this.identifyTarget.Target == null) return 0;
+        else return 2;
+    }
+
+    public int GetSecondSkillState()
+    {
+        if (this.identifyTarget.Target == null) return 0;
+        else return 2;
+    }
+
+    public void ConsumePower(TempSkill skill)
+    {
+        this.hp -= skill.HpCost;
+    }
+
+    //===========================================Weapon===========================================
     protected virtual void WeaponHolding()
     {
         if (this.identifyTarget.Target == null || this.weapon == null) return;
@@ -102,6 +122,7 @@ public class Crep : NPC, HpReceiver, ManaReceiver
 
         this.moveRandomCD = new RandomCooldown(Time.fixedDeltaTime, 
             crepSO.MinMoveRandomCD, crepSO.MaxMoveRandomCD);
+        this.identifyTarget.Owner = transform;
         this.randomRange = crepSO.RandomRange;
     }
 }

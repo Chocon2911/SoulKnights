@@ -19,13 +19,17 @@ public class TempWeapon : BaseObj, ShootUser
     {
         base.LoadComponents();
         this.LoadComponent(ref this.skills, transform.Find("Skill"), "LoadSkills()");
-        int i = 1;
+        this.LoadSO(ref this.so, "SO/Equipment/Weapon/" + transform.name);
+
         foreach (TempSkill skill in this.skills)
         {
-            skill.SetSkillOrder(i++);
             skill.SetOwner(transform);
             skill.MyLoadComponents();
+            skill.DefaultStat();
+            skill.ResetSkill();
         }
+
+        this.DefaultStat();
     }
 
     private void Update()
@@ -75,6 +79,16 @@ public class TempWeapon : BaseObj, ShootUser
     }
 
     //=========================================Shoot User=========================================
+    public int GetSkillOrder(TempShootSkill skill)
+    {
+        for (int i = 0; i < this.skills.Count; i++)
+        {
+            if (this.skills[i].Equals(skill)) return i;
+        }
+
+        return -1;
+    }
+
     public List<bool> CanShoot()
     {
         List<bool> result = new List<bool>();
@@ -95,5 +109,19 @@ public class TempWeapon : BaseObj, ShootUser
     public float GetShootAngle()
     {
         return transform.eulerAngles.z;
+    }
+
+    //==========================================Override==========================================
+    protected override void DefaultStat()
+    {
+        base.DefaultStat();
+        WeaponSO weaponSO = (WeaponSO)this.so;
+        if (weaponSO == null)
+        {
+            Debug.LogError("WeaponSO is null", transform.gameObject);
+            return;
+        }
+
+        this.holdRad = weaponSO.HoldRad;
     }
 }

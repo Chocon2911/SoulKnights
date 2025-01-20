@@ -8,4 +8,5 @@ public interface DashUser : SkillUser
     Vector2 GetDashDir();
     Rigidbody2D GetRb();
     void OnDashing();
+    void OnFinishDashing();
 }

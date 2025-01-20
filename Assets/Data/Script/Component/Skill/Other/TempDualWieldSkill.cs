@@ -11,14 +11,12 @@ public class TempDualWieldSkill : TempSkill
     [SerializeField] private TempWeapon leftWeapon;
     [SerializeField] private Cooldown skillExistCD;
     [SerializeField] private bool isUsingSkill;
-    [SerializeField] private bool isRechargingSkill;
 
     //==========================================Get Set===========================================
     public Transform LeftArm => leftArm;
     public TempWeapon LeftWeapon => leftWeapon;
     public Cooldown SkillExistCD => skillExistCD;
     public bool IsUsingSkill => isUsingSkill;
-    public bool IsRechargingSkill => isRechargingSkill;
 
     //===========================================Skill============================================
     private void CloneWeapon()
@@ -62,6 +60,8 @@ public class TempDualWieldSkill : TempSkill
         base.MyLoadComponents();
         this.LoadComponent(ref this.user, this.owner, "LoadUser()");
         this.LoadComponent(ref this.leftArm, transform.Find("LeftArm"), "LoadLeftArm()");
+        this.LoadSO(ref this.so, "SO/Skill/Other/DualWield/" + this.owner.name);
+        this.LoadComponent(ref this.user, this.owner, "LoadUser()");
     }
     public override void MyFixedUpdate()
     {
@@ -79,7 +79,14 @@ public class TempDualWieldSkill : TempSkill
 
     public override void ResetSkill()
     {
+        base.ResetSkill();
+        this.skillExistCD.ResetStatus();
+        this.isUsingSkill = false;
 
+        if (this.leftWeapon == null) return;
+        Transform deletedObj = this.leftWeapon.transform;
+        this.leftWeapon = null;
+        Destroy(deletedObj.gameObject);
     }
 
     public override void UseSkill()

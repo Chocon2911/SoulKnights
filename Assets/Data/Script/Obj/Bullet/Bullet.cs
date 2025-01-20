@@ -13,13 +13,17 @@ public abstract class Bullet : BaseObj
     [Space(25)]
     [Header("===Bullet===")]
     [Header("// Stat")]
-    [SerializeField] protected float moveSpeed;
-    [SerializeField] protected int damage;
     [SerializeField] protected List<FactionType> damgableTypes;
     [SerializeField] protected bool canPierce;
 
+    // Movement
     [Header("// Movement")]
+    [SerializeField] protected float moveSpeed;
     [SerializeField] protected bool canMove;
+
+    // Effect
+    [Header("// Instant Damage")]
+    [SerializeField] protected int damage;
 
     [Header("// Fire Effect")]
     [SerializeField] protected float fireEffDuration;
@@ -29,6 +33,7 @@ public abstract class Bullet : BaseObj
     [SerializeField] protected float poisonEffDuration;
     [SerializeField] protected int poisonDamage;
 
+    // Despawn
     [Header("// Despawn By Time")]
     [SerializeField] protected Cooldown despawnByTimeCD;
     [SerializeField] protected bool canDespawnByTime;
@@ -39,6 +44,9 @@ public abstract class Bullet : BaseObj
     [SerializeField] protected float currDistance;
     [SerializeField] protected bool canDespawnByDistance;
 
+    // Charge
+
+    // Component
     [Header("// Component")]
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] protected CapsuleCollider2D bodyCollider;

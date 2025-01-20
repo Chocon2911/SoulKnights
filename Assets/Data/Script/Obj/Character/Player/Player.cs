@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver, FireEffReceiver, WeaponUser,
-    DualWieldUser
+    DualWieldUser, DashUser
 {
     protected enum PlayerState
     {
@@ -29,7 +29,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     [SerializeField] protected PlayerState playerState;
 
     [Header("// Dash Skill")]
-    [SerializeField] protected DashSkill dashSkillNew;
+    [SerializeField] protected TempDashSkill dashSkill;
 
     [Header("// CharacterSkill")]
     [SerializeField] protected TempSkill characterSkill;
@@ -54,36 +54,52 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     //===========================================Unity============================================
     protected override void LoadComponents()
     {
-        foreach (TempWeapon tempWeapon in this.tempWeapons) tempWeapon.SetUser(this);
         base.LoadComponents();
         this.LoadComponent(ref this.rightArm, transform.Find("RightArm"), "LoadRightArm()");
         this.LoadComponent(ref this.tempWeapons, transform.Find("Weapon"), "LoadWeapons()");
-        this.LoadComponent(ref this.characterSkill, transform.Find("CharacterSkill"),
+        this.LoadComponent(ref this.dashSkill, transform.Find("DashSkill"), "LoadDashSkill()");
+        this.LoadChildComponent(ref this.characterSkill, transform.Find("CharacterSkill"),
             "LoadCharacterSkill()");
+        this.LoadSO(ref this.so, "SO/Character/Player/" + transform.name);
 
+        // Weapon
+        foreach (TempWeapon tempWeapon in this.tempWeapons) tempWeapon.SetUser(this);
+
+        // Stat
+        this.DefaultStat();
+
+        // Dash Skill
+        if (this.dashSkill != null)
+        {
+            this.dashSkill.SetOwner(transform);
+            this.dashSkill.MyLoadComponents();
+            this.dashSkill.DefaultStat();
+            this.dashSkill.ResetSkill();
+        }
+
+        // Character Skill
         if (this.characterSkill != null)
         {
             this.characterSkill.SetOwner(transform);
-            this.characterSkill.SetSkillOrder(1);
             this.characterSkill.MyLoadComponents();
+            this.characterSkill.DefaultStat();
+            this.dashSkill.ResetSkill();
         }
-
-        // Default
-        this.DefaultStat();
     }
 
     protected virtual void OnEnable()
     {
         this.Revive();
         this.canMove = true;
-        this.dashSkillNew.IsRechargingSkill = true;
+        this.dashSkill.ResetSkill();
+        this.characterSkill.ResetSkill();
         this.currWeaponSlot = 1;
     }
 
     protected virtual void Update()
     {
         // Dash Skill
-        this.CheckDashUpdate();
+        this.dashSkill.MyUpdate();
 
         // Character Skill
         this.characterSkill.MyUpdate();
@@ -99,7 +115,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.Moving();
 
         // Dash Skill
-        this.CheckDashFixedUpdate();
+        this.dashSkill.MyFixedUpdate();
 
         // Character Skill
         this.characterSkill.MyFixedUpdate();
@@ -140,8 +156,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     {
         this.rb.velocity = Vector2.zero;
         this.playerState = PlayerState.IDLE;
-        this.dashSkillNew.Dashing(this.rb);
-        if (this.canMove && !this.dashSkillNew.IsUsingSkill) this.MoveByKeyboard();
+        if (this.canMove) this.MoveByKeyboard();
     }
 
     protected virtual void MoveByKeyboard()
@@ -174,24 +189,39 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     //===========================================Skill============================================
     //============================================================================================
 
-    //============================================Dash============================================
-
-    protected virtual void CheckDashUpdate()
+    //=========================================Skill User=========================================
+    public bool CanUseSkill(TempSkill skill)
     {
-        if (InputManager.Instance.SpaceState == 1) this.dashSkillNew.UseDash(this, this, InputManager.Instance.MoveDir);
+        if (this.mana < skill.ManaCost) return false;
+        else return true;
     }
 
-    protected virtual void CheckDashFixedUpdate()
+    //=========================================Dash User==========================================
+    public bool CanDash()
     {
-        this.dashSkillNew.DashRecharging();
-        this.dashSkillNew.FinishDash();
+        if (InputManager.Instance.SpaceState == 1) return true;
+        else return false;
     }
 
-    protected virtual void DefaultDashSkillNew(PlayerSO playerSO)
+    public Vector2 GetDashDir()
     {
-        this.dashSkillNew = new DashSkill(playerSO.DashSkillSO, Time.fixedDeltaTime);
-        this.dashSkillNew.IsRechargingSkill = true;
-        this.dashSkillNew.IsUsingSkill = false;
+        return InputManager.Instance.MoveDir;
+    }
+
+    public Rigidbody2D GetRb()
+    {
+        return this.rb;
+    }
+
+    public void OnDashing()
+    {
+        this.canMove = false;
+        this.playerState = PlayerState.MOVE;
+    }
+
+    public void OnFinishDashing()
+    {
+        this.canMove = true;
     }
 
     //=========================================Amor Regen=========================================
@@ -215,7 +245,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.amorRegenSkill.IsRegening = false;
     }
 
-    //=========================================Dual Wield=========================================
+    //=======================================DualWield User=======================================
     public TempWeapon GetMainWeapon()
     {
         return this.tempWeapons[this.currWeaponSlot - 1];
@@ -247,12 +277,6 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     //============================================================================================
 
     //========================================Weapon User=========================================
-    public bool CanUseSkill(TempSkill skill)
-    {
-        if (this.mana < skill.ManaCost) return false;
-        else return true;
-    }
-
     public int GetFirstSkillState()
     {
         return InputManager.Instance.LeftClickState;
@@ -384,8 +408,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         }
 
         this.DefaultPlayerStat(playerSO);
-        this.DefaultDashSkillNew(playerSO);
         this.DefaultWeapon(playerSO);
         this.DefaultAmorRegenSkill(playerSO);
+
+        this.Revive();
+        this.canMove = true;
+        this.currWeaponSlot = 1;
     }
 }

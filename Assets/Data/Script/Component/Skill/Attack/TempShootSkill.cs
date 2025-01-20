@@ -29,7 +29,21 @@ public abstract class TempShootSkill : TempSkill
     public override void MyUpdate()
     {
         if (this.user.CanUseSkill(this)
-            && this.user.CanShoot()[this.skillOrder - 1]
+            && this.user.CanShoot()[this.user.GetSkillOrder(this)]
             && this.skillCD.IsReady) this.UseSkill();
+    }
+
+    public override void DefaultStat()
+    {
+        base.DefaultStat();
+        ShootSkillSO shootSO = (ShootSkillSO)this.so;
+        if (shootSO == null)
+        {
+            Debug.LogError("AttackSkillSO is null", transform.gameObject);
+            return;
+        }
+
+        this.bulletObj = shootSO.Bullet;
+        this.skillCD = new Cooldown(1 / shootSO.FireRate, Time.fixedDeltaTime);
     }
 }

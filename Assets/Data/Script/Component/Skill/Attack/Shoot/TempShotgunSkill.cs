@@ -10,9 +10,10 @@ public class TempShotgunSkill : TempShootSkill
     [SerializeField] private float spreadAngle;
 
     //==========================================Override==========================================
-    public override void ResetSkill()
+    public override void MyLoadComponents()
     {
-        this.ResetSkillCD();
+        base.MyLoadComponents();
+        this.LoadSO(ref this.so, "SO/Skill/Attack/Shoot/Shotgun/" + this.owner.name);
     }
 
     public override void UseSkill()
@@ -43,5 +44,19 @@ public class TempShotgunSkill : TempShootSkill
 
         this.user.ConsumePower(this);
         this.ResetSkillCD();
+    }
+
+    public override void DefaultStat()
+    {
+        base.DefaultStat();
+        ShotgunSkillSO shotgunSO = (ShotgunSkillSO)this.so;
+        if (shotgunSO == null)
+        {
+            Debug.LogError("ShotgunSkillSO is null", transform.gameObject);
+            return;
+        }
+
+        this.bulletCount = shotgunSO.BulletCount;
+        this.spreadAngle = shotgunSO.SpreadAngle;
     }
 }

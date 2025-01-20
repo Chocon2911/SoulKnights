@@ -7,11 +7,10 @@ public abstract class TempSkill : HuyMonoBehaviour
 {
     //==========================================Variable==========================================
     [Header("Skill")]
-    // Should not be touch directly by Child
+    [SerializeField] protected SkillSO so; 
     [SerializeField] protected Transform owner;
     [SerializeField] protected int manaCost;
     [SerializeField] protected int hpCost;
-    [SerializeField] protected int skillOrder;
     [SerializeField] protected Cooldown skillCD;
     [SerializeField] protected bool isRecharging;
 
@@ -19,7 +18,6 @@ public abstract class TempSkill : HuyMonoBehaviour
     public Transform Owner => owner;
     public int ManaCost => manaCost;
     public int HpCost => hpCost;
-    public int SkillOrder => skillOrder;
     public Cooldown SkillCD => skillCD;
     public bool IsRecharging => isRecharging;
 
@@ -29,15 +27,15 @@ public abstract class TempSkill : HuyMonoBehaviour
         if (this.isRecharging) this.Recharging();
     }
 
-    //===========================================Method===========================================
-    public void SetSkillOrder(int value)
-    {
-        this.skillOrder = value;
-    }
-
+    //===========================================Skill============================================
     public void SetOwner(Transform owner)
     {
         this.owner = owner;
+    }
+
+    public void SetIsRecharging(bool value)
+    {
+        this.isRecharging = value;
     }
     
     protected void Recharging()
@@ -51,12 +49,24 @@ public abstract class TempSkill : HuyMonoBehaviour
         this.isRecharging = true;
     }
 
-    protected void DefaultSkillStat(int manaCost, int hpCost, Cooldown skillCD, bool isRecharging)
+    //===========================================Other============================================
+    public virtual void DefaultStat()
     {
-        this.manaCost = manaCost;
-        this.hpCost = hpCost;
-        this.skillCD = skillCD;
-        this.isRecharging = isRecharging;
+        if (this.so == null)
+        {
+            Debug.LogError("SkillSO is null", transform.gameObject);
+            return;
+        }
+        
+        this.manaCost = this.so.ManaCost;
+        this.hpCost = this.so.HpCost;
+        this.skillCD = new Cooldown(this.so.SkillRechargeTime, Time.fixedDeltaTime);
+    }
+
+    public virtual void ResetSkill()
+    {
+        this.isRecharging = true;
+        this.skillCD.ResetStatus();
     }
 
     //==========================================Abstract==========================================
@@ -64,5 +74,4 @@ public abstract class TempSkill : HuyMonoBehaviour
     public abstract void MyFixedUpdate();
     public abstract void MyUpdate();
     public abstract void UseSkill();
-    public abstract void ResetSkill();
 }

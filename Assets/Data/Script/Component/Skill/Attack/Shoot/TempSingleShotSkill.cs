@@ -5,9 +5,10 @@ using UnityEngine;
 public class TempSingleShotSkill : TempShootSkill
 {
     //==========================================Override==========================================
-    public override void ResetSkill()
+    public override void MyLoadComponents()
     {
-        this.ResetSkillCD();
+        base.MyLoadComponents();
+        this.LoadSO(ref this.so, "SO/Skill/Attack/Shoot/SingleShot/" + this.owner.name);
     }
 
     public override void UseSkill()
@@ -27,5 +28,16 @@ public class TempSingleShotSkill : TempShootSkill
         newBullet.gameObject.SetActive(true);
         this.user.ConsumePower(this);
         this.ResetSkillCD();
+    }
+
+    public override void DefaultStat()
+    {
+        base.DefaultStat();
+        SingleShotSkillSO singleShotSO = (SingleShotSkillSO)this.so;
+        if (singleShotSO == null)
+        {
+            Debug.LogError("SingleShotSkillSO is null", transform.gameObject);
+            return;
+        }
     }
 }

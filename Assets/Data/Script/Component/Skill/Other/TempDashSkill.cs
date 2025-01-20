@@ -30,18 +30,27 @@ public class TempDashSkill : TempSkill
     //===========================================Method===========================================
     private void Dashing()
     {
+        this.dashCD.CoolingDown();
         this.user.OnDashing();
         this.user.GetRb().velocity = this.dashDir * this.dashSpeed;
     }
 
     private void FinishDash()
     {
-        this.ResetSkillCD();
         this.isDashing = false;
+        this.isRecharging = true;
         this.dashCD.ResetStatus();
+        this.user.OnFinishDashing();
     }
 
     //==========================================Override==========================================
+    public override void MyLoadComponents()
+    {
+        base.MyLoadComponents();
+        this.LoadSO(ref this.so, "SO/Skill/Other/Dash/" + this.owner.name);
+        this.LoadComponent(ref this.user, this.owner, "LoadUser()");
+    }
+
     public override void MyUpdate()
     {
         if (this.user.CanUseSkill(this)
@@ -55,19 +64,35 @@ public class TempDashSkill : TempSkill
         if (this.dashCD.IsReady) this.FinishDash();
     }
 
+    public override void DefaultStat()
+    {
+        base.DefaultStat();
+        DashSkillSO dashSO = (DashSkillSO)this.so;
+        if (dashSO == null)
+        {
+            Debug.LogError("DashSkillSO is null", transform.gameObject);
+            return;
+        }
+
+        this.dashSpeed = dashSO.DashSpeed;
+        this.dashCD = new Cooldown(dashSO.DashTime, Time.fixedDeltaTime);
+        this.skillCD = new Cooldown(dashSO.SkillRechargeTime, Time.fixedDeltaTime);
+    }
+
     public override void UseSkill()
     {
         this.dashDir = this.user.GetDashDir();
 
         if (dashDir == Vector2.zero) return;
         this.isDashing = true;
+        this.isRecharging = false;
         this.user.ConsumePower(this);
+        this.ResetSkillCD();
     }
 
     public override void ResetSkill()
     {
-        this.ResetSkillCD();
+        base.ResetSkill();
         this.FinishDash();
-        this.isRecharging = true;
     }
 }

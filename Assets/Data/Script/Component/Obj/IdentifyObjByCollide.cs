@@ -19,9 +19,12 @@ public class IdentifyObjByCollide : HuyMonoBehaviour
     public Transform Target { get => target; set => target = value; }
 
     //===========================================Unity============================================
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.transform == this.owner) return;
+        if (collision.transform == this.owner 
+            || collision.transform.IsChildOf(this.owner)
+            || target != null) return;
+
         foreach (string tag in this.tags)
         {
             if (tag != collision.tag) continue;
@@ -30,18 +33,18 @@ public class IdentifyObjByCollide : HuyMonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.transform == this.target) this.target = null;
-    }
-
     protected override void LoadComponents()
     {
         base.LoadComponents();
-        this.identifyZone = this.GetComponent<CircleCollider2D>();
+        this.LoadComponent(ref this.identifyZone, transform, "LoadIdentifyZone()");
     }
 
     //===========================================Method===========================================
+    public void MyLoadComponent()
+    {
+        this.LoadComponent(ref this.identifyZone, transform, "LoadIdentifyZone()");
+    }
+
     public void DefaultStat(IdentifyObjByCollideSO so)
     {
         this.identifyZone.radius = so.DetectRange;

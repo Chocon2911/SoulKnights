@@ -12,7 +12,7 @@ public class TempSingleShotSkill : TempShootSkill
     }
 
     public override void UseSkill()
-    {    
+    {
         Quaternion bulletRot = Quaternion.Euler(0, 0, this.user.GetShootAngle());
         Transform newBullet = SkillUtil.Instance.Shoot(this.bulletObj, this.user.GetBulletPos(), bulletRot);
         if (newBullet == null) return;

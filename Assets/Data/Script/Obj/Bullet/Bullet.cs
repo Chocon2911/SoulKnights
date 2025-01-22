@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
-public abstract class Bullet : BaseObj
+public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, ChargeByTimeUser
 {
     //==========================================Variable==========================================
     [Space(25)]
@@ -34,6 +35,8 @@ public abstract class Bullet : BaseObj
     [SerializeField] protected int poisonDamage;
 
     // Despawn
+    [Header("// Despawn")]
+    [SerializeField] protected List<Despawner> despawners;
     [Header("// Despawn By Time")]
     [SerializeField] protected Cooldown despawnByTimeCD;
     [SerializeField] protected bool canDespawnByTime;
@@ -45,6 +48,11 @@ public abstract class Bullet : BaseObj
     [SerializeField] protected bool canDespawnByDistance;
 
     // Charge
+    [Header("// Charge")]
+    [SerializeField] protected ChargeByTime charge;
+    [SerializeField] protected List<float> moveSpeeds;
+    [SerializeField] protected List<int> damages;
+    [SerializeField] protected float sizeMul;
 
     // Component
     [Header("// Component")]
@@ -68,6 +76,7 @@ public abstract class Bullet : BaseObj
     public List<FactionType> DamagableTypes
     {
         get => damgableTypes;
+        set => damgableTypes = value;
     }
 
     public bool CanPierce
@@ -134,6 +143,14 @@ public abstract class Bullet : BaseObj
         // Load Component
         this.LoadComponent(ref this.rb, transform, "LoadRb()");
         this.LoadComponent(ref this.bodyCollider, transform, "LoadBodyCollider()");
+        this.LoadComponent(ref this.despawners, transform.Find("Despawn"), "LoadDespawners()");
+
+        // Despawners
+        foreach (Despawner despawner in this.despawners)
+        {
+            despawner.Owner = transform;
+            despawner.MyLoadComponent();
+        }
 
         // Default
         this.DefaultStat();
@@ -144,10 +161,18 @@ public abstract class Bullet : BaseObj
         this.Respawn();
     }
 
+    protected virtual void Update()
+    {
+        foreach (Despawner despawner in this.despawners) despawner.MyUpdate();
+    }
+
     protected virtual void FixedUpdate()
     {
         this.DespawnByTime();
         this.DespawnByDistance();
+
+        // Despawner
+        foreach (Despawner despawner in this.despawners) despawner.MyFixedUpdate();
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
@@ -169,6 +194,18 @@ public abstract class Bullet : BaseObj
         this.canMove = false;
     }
 
+    //========================================Despawn User========================================
+    Spawner DespawnUser.GetSpawner()
+    {
+        return BulletSpawner.Instance;
+    }
+
+    //==================================Despawn By Distance User==================================
+    Vector2 DespawnByDistanceUser.GetTargetPos()
+    {
+        return this.shooter.position;
+    }
+
     //======================================Despawn By Time=======================================
     protected virtual void DespawnByTime()
     {
@@ -187,6 +224,18 @@ public abstract class Bullet : BaseObj
     public virtual void SetShooter(Transform obj) 
     {
         this.shooter = obj;
+    }
+
+    //===========================================Charge===========================================
+    void ChargeByTimeUser.OnCharging()
+    {
+        transform.localScale *= this.sizeMul;
+        this.bodyCollider.size *= this.sizeMul;
+    }
+
+    void ChargeByTimeUser.OnFinishCharging()
+    {
+        
     }
 
     //===========================================Other============================================
@@ -217,6 +266,7 @@ public abstract class Bullet : BaseObj
         this.fireDamage = bulletSO.FireDamage;
     }
 
+    // Despawn
     protected virtual void DefaultDespawnByTime(BulletSO bulletSO)
     {
         this.canDespawnByTime = true;
@@ -229,11 +279,14 @@ public abstract class Bullet : BaseObj
         this.despawnDistance = bulletSO.DespawnDistance;
     }
 
+
+    // Movement
     protected virtual void DefaultMovement(BulletSO bulletSO)
     {
         this.canMove = false;
     }
 
+    // Component
     protected virtual void DefaultComponent()
     {
         this.rb.isKinematic = true;

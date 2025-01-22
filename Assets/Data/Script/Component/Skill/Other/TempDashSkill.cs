@@ -6,26 +6,11 @@ public class TempDashSkill : TempSkill
 {
     //==========================================Variable==========================================
     [Header("Dash")]
-    [SerializeField] private DashUser user;
+    [SerializeField] private new DashUser user;
     [SerializeField] private Cooldown dashCD;
     [SerializeField] private Vector2 dashDir;
     [SerializeField] private float dashSpeed;
     [SerializeField] private bool isDashing;
-
-    //===========================================Unity============================================
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-        if (this.isDashing) this.Dashing();
-        if (this.dashCD.IsReady) this.FinishDash();
-    }
-
-    private void Update()
-    {
-        if (this.user.CanUseSkill(this) 
-            && this.user.CanDash() 
-            && this.skillCD.IsReady) this.UseSkill();
-    }
 
     //===========================================Method===========================================
     private void Dashing()

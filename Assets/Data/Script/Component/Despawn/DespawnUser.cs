@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargeObjScale : ChargableBullet
+public interface DespawnUser
 {
-    
+    Spawner GetSpawner();
 }

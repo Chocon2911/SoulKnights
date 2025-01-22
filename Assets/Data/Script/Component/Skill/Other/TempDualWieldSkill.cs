@@ -6,7 +6,7 @@ public class TempDualWieldSkill : TempSkill
 {
     //==========================================Variable==========================================
     [Header("Dual Wield")]
-    [SerializeField] private DualWieldUser user;
+    [SerializeField] private new DualWieldUser user;
     [SerializeField] private Transform leftArm;
     [SerializeField] private TempWeapon leftWeapon;
     [SerializeField] private Cooldown skillExistCD;
@@ -27,6 +27,7 @@ public class TempDualWieldSkill : TempSkill
         Transform tempLeftWeapon = Instantiate(mainWeaponObj, mainWeaponObj.position,
             mainWeaponObj.rotation, transform);
         tempLeftWeapon.name = "LeftWeapon";
+
         this.leftWeapon = transform.Find("LeftWeapon").GetComponent<TempWeapon>();
         this.leftWeapon.SetUser(this.owner.GetComponent<WeaponUser>());
     }
@@ -50,7 +51,7 @@ public class TempDualWieldSkill : TempSkill
     //=======================================Weapon Holding=======================================
     private void WeaponHolding()
     {
-        WeaponUtil.Instance.WeaponHolding(this.leftWeapon, this.leftArm, 
+        WeaponUtil.Instance.WeaponHolding(this.leftWeapon, this.leftArm,
             this.user.GetOwnerPos(), this.user.GetTargetPos());
     }
 

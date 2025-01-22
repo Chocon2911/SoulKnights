@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver, FireEffReceiver, WeaponUser,
-    DualWieldUser, DashUser
+public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver, 
+    FireEffReceiver, WeaponUser, DualWieldUser, DashUser
 {
     protected enum PlayerState
     {
@@ -13,6 +13,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         DASH
     }
 
+    #region Variable
     //==========================================Variable==========================================
     [Space(25)]
     [Header("//============================================================================================")]
@@ -43,6 +44,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     [Header("// Amor Regen")]
     [SerializeField] protected RegenSkill amorRegenSkill;
 
+
     //==========================================Get Set===========================================
     // Stat
     public int MaxMana => maxMana;
@@ -50,7 +52,9 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     public int MaxAmor => maxAmor;
     public int Amor => amor;
     public FactionType FactionType => FactionType;
+    #endregion
 
+    #region Unity
     //===========================================Unity============================================
     protected override void LoadComponents()
     {
@@ -129,9 +133,10 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         // Weapon
         this.WeaponHolding();
     }
+    #endregion
 
 
-
+    #region Stat
     //============================================================================================
     //============================================Stat============================================
     //============================================================================================
@@ -146,9 +151,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.fireEff.CoolingDown();
         this.poisonEff.DealingDamage(ref this.hp);
     }
+    #endregion
 
 
 
+    #region Movement
     //============================================================================================
     //==========================================Movement==========================================
     //============================================================================================
@@ -170,9 +177,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         else this.image.flipX = false;
         MovementUtil.Instance.MoveByKeyboard(this.rb, this.moveSpeed);
     }
+    #endregion
 
 
 
+    #region Animation
     //============================================================================================
     //=========================================Animation==========================================
     //============================================================================================
@@ -182,9 +191,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         else if (this.playerState == PlayerState.MOVE) this.myAnimator.SetInteger("State", 1);
         else if (this.playerState == PlayerState.DASH) this.myAnimator.SetInteger("State", 2);
     }
+    #endregion
 
 
 
+    #region Skill
     //============================================================================================
     //===========================================Skill============================================
     //============================================================================================
@@ -269,9 +280,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     {
         return InputManager.Instance.MousePos;
     }
+    #endregion
 
 
 
+    #region Weapon
     //============================================================================================
     //===========================================Weapon===========================================
     //============================================================================================
@@ -304,9 +317,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         WeaponUtil.Instance.WeaponHolding(this.tempWeapons[this.currWeaponSlot - 1], 
             this.rightArm, transform.position, InputManager.Instance.MousePos);
     }
+    #endregion
 
 
 
+    #region Stat
     //============================================================================================
     //============================================Stat============================================
     //============================================================================================
@@ -358,9 +373,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     {
         this.fireEff.ActivateEff(fireDuration, damage);
     }
+    #endregion
 
 
 
+    #region Other
     //============================================================================================
     //===========================================Other============================================
     //============================================================================================
@@ -370,9 +387,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.mana = this.maxMana;
         this.amor = this.maxAmor;
     }
+    #endregion
 
 
 
+    #region Default
     //============================================================================================
     //==========================================Default===========================================
     //============================================================================================
@@ -391,9 +410,11 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     {
         this.maxWeaponSlot = playerSO.MaxWeaponSlot;
     }
+    #endregion
 
 
 
+    #region Override
     //============================================================================================
     //==========================================Override==========================================
     //============================================================================================
@@ -415,4 +436,5 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.canMove = true;
         this.currWeaponSlot = 1;
     }
+    #endregion
 }

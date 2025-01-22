@@ -6,7 +6,7 @@ public abstract class TempShootSkill : TempSkill
 {
     //==========================================Variable==========================================
     [Header("Shoot")]
-    [SerializeField] protected ShootUser user;
+    [SerializeField] protected new ShootUser user;
     [SerializeField] protected Transform bulletObj;
 
     protected override void LoadComponents()

@@ -78,6 +78,18 @@ public class MovementUtil
         this.MoveForward(rb, moveSpeed);
     }
 
+    //===========================================Rotate===========================================
+    public void RotateToTarget(Rigidbody2D rb, Transform mainObj, Vector2 targetPos, 
+        float rotateSpeed)
+    {
+        Vector2 distance = (Vector2)mainObj.position - targetPos;
+        Quaternion finalRot = Quaternion.Euler(distance);
+        Quaternion newRot = Quaternion.RotateTowards(mainObj.rotation, finalRot,
+            rotateSpeed * Time.fixedDeltaTime);
+
+        rb.MoveRotation(newRot);
+    }
+
     private void Rotate(Transform myObj, float rotateSpeed) 
     {
         myObj.eulerAngles = new Vector3(0, 0, myObj.eulerAngles.z + rotateSpeed);

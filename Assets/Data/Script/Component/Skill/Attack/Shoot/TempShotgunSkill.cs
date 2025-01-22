@@ -18,7 +18,7 @@ public class TempShotgunSkill : TempShootSkill
 
     public override void UseSkill()
     {
-        List<Transform> newBullets = SkillUtil.Instance.Shotgun(bulletObj, this.bulletCount, 
+        List<Transform> newBullets = SkillUtil.Instance.Shotgun(bulletObj, this.bulletCount,
             this.user.GetBulletPos(), this.user.GetShootAngle(), spreadAngle);
 
         if (newBullets == null)

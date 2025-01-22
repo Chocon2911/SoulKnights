@@ -20,8 +20,10 @@ public class TempAdvanceShotgunSkill : TempShootSkill
     {
         for (int i = 0; i < this.bulletAngles.Count; i++)
         {
-            Quaternion bulletRot = Quaternion.Euler(0, 0, this.user.GetShootAngle() + this.bulletAngles[i]);
-            Transform newBullet = SkillUtil.Instance.Shoot(this.bulletObj, this.user.GetBulletPos(), bulletRot);
+            Quaternion bulletRot = Quaternion.Euler(0, 0, 
+                this.user.GetShootAngle() + this.bulletAngles[i]);
+            Transform newBullet = SkillUtil.Instance.Shoot(this.bulletObj, 
+                this.user.GetBulletPos(), bulletRot);
             if (newBullet == null) return;
 
             Bullet bullet = newBullet.GetComponent<Bullet>();

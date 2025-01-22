@@ -6,6 +6,7 @@ public abstract class Movement : HuyMonoBehaviour
 {
     //==========================================Variable==========================================
     [Header("Movement")]
+    [SerializeField] protected MovementSO so;
     [SerializeField] protected MovementUser user;
     [SerializeField] protected Transform owner;
     [SerializeField] protected float moveSpeed;
@@ -16,10 +17,11 @@ public abstract class Movement : HuyMonoBehaviour
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public bool CanMove { get => canMove; set => canMove = value; }
 
-    //==========================================Abstract==========================================
+    //===========================================Other============================================
     public virtual void MyLoadComponent()
     {
-        // For Override
+        this.LoadComponent(ref this.user, this.owner, "LoadUser()");
+        this.LoadSO(ref this.so, "SO/Component/Movement/" + this.owner.name);
     }
 
     public virtual void MyUpdate()
@@ -37,5 +39,17 @@ public abstract class Movement : HuyMonoBehaviour
         // For Override
     }
 
+    public virtual void DefaultStat()
+    {
+        if (this.so != null)
+        {
+            Debug.LogError("MovementSO is null", transform.gameObject);
+            return;
+        }
+
+        this.moveSpeed = this.so.MoveSpeed;
+    }
+
+    //==========================================Abstract==========================================
     protected abstract void Move();
 }

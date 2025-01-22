@@ -7,6 +7,7 @@ public abstract class TempSkill : HuyMonoBehaviour
 {
     //==========================================Variable==========================================
     [Header("Skill")]
+    [SerializeField] protected SkillUser user;
     [SerializeField] protected SkillSO so; 
     [SerializeField] protected Transform owner;
     [SerializeField] protected int manaCost;

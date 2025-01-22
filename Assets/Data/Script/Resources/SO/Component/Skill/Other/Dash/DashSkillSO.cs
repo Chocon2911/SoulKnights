@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Dash", menuName = "SO/Skill/Dash")]
+[CreateAssetMenu(fileName = "Dash", menuName = "SO/Component/Skill/Other/Dash")]
 public class DashSkillSO : SkillSO
 {
     //==========================================Variable==========================================

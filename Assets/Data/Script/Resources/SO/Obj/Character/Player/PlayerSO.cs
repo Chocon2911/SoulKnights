@@ -14,9 +14,6 @@ public class PlayerSO : CharacterSO
     // Weapon
     [SerializeField] protected int maxWeaponSlot;
 
-    // Amor Regen
-    [SerializeField] protected RegenSkillSO amorRegenSO;
-
     //============================================Get=============================================
     // Stat
     public int MaxMana => maxMana;
@@ -24,7 +21,4 @@ public class PlayerSO : CharacterSO
 
     // Weapon
     public int MaxWeaponSlot => maxWeaponSlot;
-
-    // Amor Regen
-    public RegenSkillSO AmorRegenSO => amorRegenSO;
 }

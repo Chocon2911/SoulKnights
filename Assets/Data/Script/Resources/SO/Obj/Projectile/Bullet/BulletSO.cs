@@ -10,8 +10,6 @@ public class BulletSO : ObjSO
     // Stat
     [SerializeField] private float moveSpeed;
     [SerializeField] private int damage;
-    [SerializeField] private float despawnTime;
-    [SerializeField] private float despawnDistance;
     [SerializeField] private List<FactionType> damgableTypes;
 
     // Poison Effect
@@ -26,8 +24,6 @@ public class BulletSO : ObjSO
     // Stat
     public float MoveSpeed => moveSpeed;
     public int Damage => damage;
-    public float DespawnTime => despawnTime;
-    public float DespawnDistance => despawnDistance;
     public List<FactionType> DamagableTypes => damgableTypes;
 
     // Poison Effect

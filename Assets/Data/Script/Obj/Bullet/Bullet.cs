@@ -6,7 +6,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
-public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, ChargeByTimeUser
+public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, ChargeByTimeUser, 
+    MovementUser, ChaseTargetUser
 {
     //==========================================Variable==========================================
     [Space(25)]
@@ -14,38 +15,22 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
     [Space(25)]
     [Header("===Bullet===")]
     [Header("// Stat")]
+    [SerializeField] protected Transform shooter;
+    [SerializeField] protected BulletAttribute attribute;
     [SerializeField] protected List<FactionType> damgableTypes;
     [SerializeField] protected bool canPierce;
 
     // Movement
     [Header("// Movement")]
-    [SerializeField] protected float moveSpeed;
-    [SerializeField] protected bool canMove;
+    [SerializeField] protected Movement movement;
 
-    // Effect
-    [Header("// Instant Damage")]
-    [SerializeField] protected int damage;
-
-    [Header("// Fire Effect")]
-    [SerializeField] protected float fireEffDuration;
-    [SerializeField] protected int fireDamage;
-
-    [Header("// Poison Effect")]
-    [SerializeField] protected float poisonEffDuration;
-    [SerializeField] protected int poisonDamage;
+    // IdentifyObj
+    [Header("IdentifyObj")]
+    [SerializeField] protected IdentifyObjByCollide idenObjByCollide;
 
     // Despawn
     [Header("// Despawn")]
     [SerializeField] protected List<Despawner> despawners;
-    [Header("// Despawn By Time")]
-    [SerializeField] protected Cooldown despawnByTimeCD;
-    [SerializeField] protected bool canDespawnByTime;
-
-    [Header("// Despawn By Distance")]
-    [SerializeField] protected Transform shooter;
-    [SerializeField] protected float despawnDistance;
-    [SerializeField] protected float currDistance;
-    [SerializeField] protected bool canDespawnByDistance;
 
     // Charge
     [Header("// Charge")]
@@ -61,80 +46,25 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
 
     //==========================================Get Set===========================================
     // Stat
-    public float MoveSpeed
-    {
-        get => moveSpeed;
-        set => moveSpeed = value;
-    }
-    
-    public int Damage
-    {
-        get => damage;
-        set => damage = value;
-    }
-
-    public List<FactionType> DamagableTypes
-    {
-        get => damgableTypes;
-        set => damgableTypes = value;
-    }
-
-    public bool CanPierce
-    {
-        get => canPierce;
-        set => canPierce = value;
-    }
+    public BulletAttribute Attribute { get => attribute; set => attribute = value; }
+    public List<FactionType> DamagableTypes { get => damgableTypes; set => damgableTypes = value; }
+    public bool CanPierce { get => canPierce; set => canPierce = value; }
 
     // Movement
-    public bool CanMove
-    {
-        get => canMove;
-        set => canMove = value;
-    }
+    public Movement Movement { get => movement; set => movement = value; }
 
-    // Poison Effect
-    public float PoisonEffDuration
-    {
-        get => poisonEffDuration;
-        set => poisonEffDuration = value;
-    }
+    // IdentifyObjByCollide
+    public IdentifyObjByCollide IdenObjByCollide { get => idenObjByCollide; set => idenObjByCollide = value; }
 
-    public int PoisonDamage
-    {
-        get => poisonDamage;
-        set => poisonDamage = value;
-    }
-
-    // Fire Effect
-    public float FireEffDuration
-    {
-        get => fireEffDuration;
-        set => fireEffDuration = value;
-    }
-
-    public int FireDamage
-    {
-        get => fireDamage;
-        set => fireDamage = value;
-    }
-
-    // Despawn By Time
-    public bool CanDespawnByTime
-    {
-        get => canDespawnByTime;
-        set => canDespawnByTime = value;
-    }
+    // Charge
+    public ChargeByTime Charge { get => charge; set => charge = value; }
+    public List<float> MoveSpeeds { get => moveSpeeds; set => moveSpeeds = value; }
+    public List<int> Damages { get => damages; set => damages = value; }
+    public float SizeMul { get => sizeMul; set => sizeMul = value; }
 
     // Component
-    public Rigidbody2D Rb
-    {
-        get => rb;
-    }
-
-    public CapsuleCollider2D BodyColldier
-    {
-        get => bodyCollider;
-    }
+    public Rigidbody2D Rb { get => rb; }
+    public CapsuleCollider2D BodyColldier { get => bodyCollider; }
 
     //===========================================Unity============================================
     protected override void LoadComponents()
@@ -144,6 +74,10 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
         this.LoadComponent(ref this.rb, transform, "LoadRb()");
         this.LoadComponent(ref this.bodyCollider, transform, "LoadBodyCollider()");
         this.LoadComponent(ref this.despawners, transform.Find("Despawn"), "LoadDespawners()");
+        this.LoadComponent(ref this.movement, transform.Find("Movement"), "LoadMovement()");
+        this.LoadComponent(ref this.idenObjByCollide, transform.Find("IdentifyObj"), 
+            "LoadIdenObjByCollide()");
+        this.LoadComponent(ref this.charge, transform.Find("Charge"), "LoadCharge()");
 
         // Despawners
         foreach (Despawner despawner in this.despawners)
@@ -152,27 +86,68 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
             despawner.MyLoadComponent();
         }
 
+        // Movement
+        if (this.movement != null)
+        {
+            this.movement.Owner = transform;
+            this.movement.MyLoadComponent();
+            this.movement.DefaultStat();
+        }
+
+        // IdentifyObjByCollide
+        if (this.idenObjByCollide != null)
+        {
+            this.idenObjByCollide.Owner = transform;
+            this.idenObjByCollide.MyLoadComponent();
+            this.idenObjByCollide.MyLoadComponent();
+        }
+
+        // Charge
+        if (this.charge != null)
+        {
+            this.charge.Owner = transform;
+            this.charge.MyLoadComponent();
+            this.charge.DefaultStat();
+        }
+
         // Default
         this.DefaultStat();
     }
 
     protected virtual void OnEnable()
     {
-        this.Respawn();
+        // Movement
+        if (this.movement != null) this.movement.ResetMovement();
+
+        // Despawners
+        foreach (Despawner despawner in this.despawners) despawner.ResetDespawn();
+
+        // Charge
+        if (this.charge != null) this.charge.ResetCharge();
     }
 
     protected virtual void Update()
     {
+        // Movement
+        if (this.movement != null) this.movement.MyUpdate();
+
+        // Despawners
         foreach (Despawner despawner in this.despawners) despawner.MyUpdate();
+
+        // Charge
+        if (this.charge != null) this.charge.MyUpdate();
     }
 
     protected virtual void FixedUpdate()
     {
-        this.DespawnByTime();
-        this.DespawnByDistance();
+        // Movement
+        if (this.movement != null) this.movement.MyFixedUpdate();
 
         // Despawner
         foreach (Despawner despawner in this.despawners) despawner.MyFixedUpdate();
+
+        // Charge
+        if (this.charge != null) this.charge.MyFixedUpdate();
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
@@ -188,11 +163,35 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
         }
     }
 
+
+
+    //============================================================================================
     //==========================================Movement==========================================
-    protected virtual void DefaultMovement()
+    //============================================================================================
+
+    //=======================================Movement User========================================
+    Rigidbody2D MovementUser.GetRb()
     {
-        this.canMove = false;
+        return this.rb;
     }
+
+    //======================================ChaseTarget User======================================
+    Transform ChaseTargetUser.GetTarget()
+    {
+        if (this.idenObjByCollide == null)
+        {
+            Debug.LogWarning("Require IdentifyObjByCollide for ChaseTargetUser", 
+                transform.gameObject);
+        }
+        
+        return this.idenObjByCollide.Target;
+    }
+
+
+
+    //============================================================================================
+    //==========================================Despawn===========================================
+    //============================================================================================
 
     //========================================Despawn User========================================
     Spawner DespawnUser.GetSpawner()
@@ -206,84 +205,48 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
         return this.shooter.position;
     }
 
-    //======================================Despawn By Time=======================================
-    protected virtual void DespawnByTime()
-    {
-        if (!this.canDespawnByTime) return;
-        DespawnUtil.Instance.DespawnByTime(this.despawnByTimeCD, transform, BulletSpawner.Instance);
-    }
 
-    //======================================Despawn By Distance====================================
-    protected virtual void DespawnByDistance()
-    {
-        if (!this.canDespawnByDistance || this.shooter == null) return;
-        this.currDistance = DespawnUtil.Instance.DespawnByDistance
-            (transform.position, this.shooter.position, this.despawnDistance, transform, BulletSpawner.Instance);
-    }
 
-    public virtual void SetShooter(Transform obj) 
-    {
-        this.shooter = obj;
-    }
-
+    //============================================================================================
     //===========================================Charge===========================================
+    //============================================================================================
     void ChargeByTimeUser.OnCharging()
     {
+        this.movement.MoveSpeed = this.moveSpeeds[this.charge.GetState(this.moveSpeeds.Count - 1)];
+        this.attribute.Damage = this.damages[this.charge.GetState(this.damages.Count)];
+        
         transform.localScale *= this.sizeMul;
         this.bodyCollider.size *= this.sizeMul;
     }
 
     void ChargeByTimeUser.OnFinishCharging()
     {
-        
+        this.movement.MoveSpeed = this.moveSpeeds[this.moveSpeeds.Count - 1];
+        this.attribute.Damage = this.damages[this.damages.Count - 1];
     }
 
+
+
+    //============================================================================================
     //===========================================Other============================================
-    // Respawn
-    protected virtual void Respawn()
-    {
-        this.canMove = true;
-        this.despawnByTimeCD.ResetStatus();
-    }
-    
-    // Default
+    //============================================================================================
+    // Stat
     protected virtual void DefaultBulletStat(BulletSO bulletSO)
     {
-        this.moveSpeed = bulletSO.MoveSpeed;
-        this.damage = bulletSO.Damage;
+        this.attribute.Damage = bulletSO.Damage;
         this.damgableTypes = bulletSO.DamagableTypes;
     }
 
     protected virtual void DefaultPoisonEff(BulletSO bulletSO)
     {
-        this.poisonEffDuration = bulletSO.PoisonEffDuration;
-        this.poisonDamage = bulletSO.PoisonDamage;
+        this.attribute.PoisonEffDuration = bulletSO.PoisonEffDuration;
+        this.attribute.PoisonDamage = bulletSO.PoisonDamage;
     }
 
     protected virtual void DefaultFireEff(BulletSO bulletSO)
     {
-        this.fireEffDuration = bulletSO.FireEffDuration;
-        this.fireDamage = bulletSO.FireDamage;
-    }
-
-    // Despawn
-    protected virtual void DefaultDespawnByTime(BulletSO bulletSO)
-    {
-        this.canDespawnByTime = true;
-        this.despawnByTimeCD = new Cooldown(bulletSO.DespawnTime, Time.fixedDeltaTime);
-    }
-
-    protected virtual void DefaultDespawnByDistance(BulletSO bulletSO)
-    {
-        this.canDespawnByDistance = true;
-        this.despawnDistance = bulletSO.DespawnDistance;
-    }
-
-
-    // Movement
-    protected virtual void DefaultMovement(BulletSO bulletSO)
-    {
-        this.canMove = false;
+        this.attribute.FireEffDuration = bulletSO.FireEffDuration;
+        this.attribute.FireDamage = bulletSO.FireDamage;
     }
 
     // Component
@@ -293,7 +256,11 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
         this.bodyCollider.isTrigger = true;
     }
 
+
+
+    //============================================================================================
     //==========================================Override==========================================
+    //============================================================================================
     protected override void DefaultStat()
     {
         base.DefaultStat();
@@ -307,25 +274,34 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
         this.DefaultBulletStat(bulletSO);
         this.DefaultPoisonEff(bulletSO);
         this.DefaultFireEff(bulletSO);
-        this.DefaultDespawnByTime(bulletSO);
-        this.DefaultDespawnByDistance(bulletSO);
-        this.DefaultMovement(bulletSO);
         this.DefaultComponent();
     }
 
-    //==========================================Abstract==========================================
+
+
+    //============================================================================================
+    //===========================================Method===========================================
+    //============================================================================================
     protected virtual void OnColliding(Transform collidedObj)
     {
         HpReceiver hpRecv = collidedObj.GetComponent<HpReceiver>();
         FireEffReceiver fireEffRecv = collidedObj.GetComponent<FireEffReceiver>();
         PoisonEffReceiver poisonEffRecv = collidedObj.GetComponent<PoisonEffReceiver>();
 
-        if (hpRecv != null) hpRecv.ReceiveHp(-this.damage);
-        if (fireEffRecv != null) fireEffRecv.ReceiveFireEff(this.fireEffDuration, this.fireDamage);
-        if (poisonEffRecv != null) poisonEffRecv.ReceivePoisonEff(this.poisonEffDuration, this.poisonDamage);
+        if (hpRecv != null) 
+            hpRecv.ReceiveHp(-this.attribute.Damage);
+        if (fireEffRecv != null) 
+            fireEffRecv.ReceiveFireEff(this.attribute.FireEffDuration, this.attribute.FireDamage);
+        if (poisonEffRecv != null) 
+            poisonEffRecv.ReceivePoisonEff(this.attribute.PoisonEffDuration, this.attribute.PoisonDamage);
 
         if (hpRecv == null && fireEffRecv == null && poisonEffRecv == null) return;
         if (this.canPierce) return;
         DespawnUtil.Instance.Despawn(transform, BulletSpawner.Instance);
+    }
+
+    public virtual void SetShooter(Transform obj)
+    {
+        this.shooter = obj;
     }
 }

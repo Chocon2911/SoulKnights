@@ -10,9 +10,9 @@ public class TempShotgunSkill : TempShootSkill
     [SerializeField] private float spreadAngle;
 
     //==========================================Override==========================================
-    public override void MyLoadComponents()
+    public override void MyLoadComponent()
     {
-        base.MyLoadComponents();
+        base.MyLoadComponent();
         this.LoadSO(ref this.so, "SO/Skill/Attack/Shoot/Shotgun/" + this.owner.name);
     }
 

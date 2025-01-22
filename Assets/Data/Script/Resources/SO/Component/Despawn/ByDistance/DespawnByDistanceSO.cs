@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Movement", menuName = "SO/Component/Movement/Base")]
-public class MovementSO : ScriptableObject
+[CreateAssetMenu(fileName = "DespawnByDistance", menuName = "SO/Component/Despawn/ByDistance")]
+public class DespawnByDistanceSO : ScriptableObject
 {
     //==========================================Variable==========================================
-    [Header("Movement")]
-    [SerializeField] private float moveSpeed;
+    [Header("By Distance")]
+    [SerializeField] private float despawnDistance;
 
     //============================================Get=============================================
-    public float MoveSpeed => moveSpeed;
+    public float DespawnDistance => despawnDistance;
 }

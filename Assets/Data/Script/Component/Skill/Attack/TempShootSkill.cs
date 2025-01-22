@@ -16,9 +16,9 @@ public abstract class TempShootSkill : TempSkill
     }
 
     //==========================================Override==========================================
-    public override void MyLoadComponents()
+    public override void MyLoadComponent()
     {
-        base.MyLoadComponents();
+        base.MyLoadComponent();
         this.LoadComponent(ref this.user, this.owner, "LoadUser()");
     }
     public override void MyFixedUpdate()

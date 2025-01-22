@@ -16,8 +16,12 @@ public class ChaseTarget : Movement
     //==========================================Override==========================================
     protected override void Move()
     {
-        MovementUtil.Instance.RotateToTarget(this.user.GetRb(), this.owner, 
-            this.user.GetTargetPos(), this.rotateSpeed);
+        if (this.user.GetTarget() != null)
+        {
+            MovementUtil.Instance.RotateToTarget(this.user.GetRb(), this.owner,
+                this.user.GetTarget().position, this.rotateSpeed);
+        }
+
         MovementUtil.Instance.MoveForward(this.user.GetRb(), this.moveSpeed);
     }
 

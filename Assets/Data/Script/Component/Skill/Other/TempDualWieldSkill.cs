@@ -56,9 +56,9 @@ public class TempDualWieldSkill : TempSkill
     }
 
     //==========================================Override==========================================
-    public override void MyLoadComponents()
+    public override void MyLoadComponent()
     {
-        base.MyLoadComponents();
+        base.MyLoadComponent();
         this.LoadComponent(ref this.user, this.owner, "LoadUser()");
         this.LoadComponent(ref this.leftArm, transform.Find("LeftArm"), "LoadLeftArm()");
         this.LoadSO(ref this.so, "SO/Skill/Other/DualWield/" + this.owner.name);

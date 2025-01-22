@@ -29,9 +29,9 @@ public class TempDashSkill : TempSkill
     }
 
     //==========================================Override==========================================
-    public override void MyLoadComponents()
+    public override void MyLoadComponent()
     {
-        base.MyLoadComponents();
+        base.MyLoadComponent();
         this.LoadSO(ref this.so, "SO/Skill/Other/Dash/" + this.owner.name);
         this.LoadComponent(ref this.user, this.owner, "LoadUser()");
     }

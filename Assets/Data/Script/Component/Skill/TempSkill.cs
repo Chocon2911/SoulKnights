@@ -22,12 +22,6 @@ public abstract class TempSkill : HuyMonoBehaviour
     public Cooldown SkillCD => skillCD;
     public bool IsRecharging => isRecharging;
 
-    //===========================================Unity============================================
-    protected virtual void FixedUpdate()
-    {
-        if (this.isRecharging) this.Recharging();
-    }
-
     //===========================================Skill============================================
     public void SetOwner(Transform owner)
     {
@@ -70,9 +64,21 @@ public abstract class TempSkill : HuyMonoBehaviour
         this.skillCD.ResetStatus();
     }
 
+    public virtual void MyLoadComponent() 
+    {
+        this.LoadComponent(ref this.user, this.owner, "LoadUser()");
+    }
+
+    public virtual void MyFixedUpdate()
+    {
+        if (this.isRecharging) this.Recharging();
+    }
+
+    public virtual void MyUpdate()
+    {
+        // For Override
+    }
+
     //==========================================Abstract==========================================
-    public virtual void MyLoadComponents() { }
-    public abstract void MyFixedUpdate();
-    public abstract void MyUpdate();
     public abstract void UseSkill();
 }

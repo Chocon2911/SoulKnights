@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Name", menuName = "SO/Other/IdentifyObjByCollide")]
+[CreateAssetMenu(fileName = "Name", menuName = "SO/Component/Other/IdentifyObjByCollide")]
 public class IdentifyObjByCollideSO : ScriptableObject
 {
     //==========================================Variable==========================================

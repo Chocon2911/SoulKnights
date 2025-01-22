@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChaseTargetByCollideSO : ChaseTargetSO
+[CreateAssetMenu(fileName = "DespawnByTime", menuName = "SO/Component/Despawn/ByTime")]
+public class DespawnByTimeSO : ScriptableObject
 {
     //==========================================Variable==========================================
-    [Header("Chase Target By Collide")]
-    [SerializeField] private IdentifyObjByCollideSO idenObjByCollideSO;
+    [Header("By Time")]
+    [SerializeField] private float despawnTime;
 
     //============================================Get=============================================
-    public IdentifyObjByCollideSO IdenObjByCollideSO => idenObjByCollideSO;
+    public float DespawnTime => despawnTime;
 }

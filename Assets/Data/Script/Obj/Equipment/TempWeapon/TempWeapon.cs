@@ -24,7 +24,7 @@ public class TempWeapon : BaseObj, ShootUser
         foreach (TempSkill skill in this.skills)
         {
             skill.SetOwner(transform);
-            skill.MyLoadComponents();
+            skill.MyLoadComponent();
             skill.DefaultStat();
             skill.ResetSkill();
         }

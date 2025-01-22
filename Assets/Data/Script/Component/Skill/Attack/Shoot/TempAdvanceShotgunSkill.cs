@@ -10,9 +10,9 @@ public class TempAdvanceShotgunSkill : TempShootSkill
     [SerializeField] private List<float> bulletAngles;
 
     //==========================================Override==========================================
-    public override void MyLoadComponents()
+    public override void MyLoadComponent()
     {
-        base.MyLoadComponents();
+        base.MyLoadComponent();
         this.LoadSO(ref this.so, "SO/Skill/Attack/Shoot/AdvanceShotgun/" + this.owner.name);
     }
 

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "BurstSkill", menuName = "SO/Skill/Attack/Shoot/Burst")]
+[CreateAssetMenu(fileName = "BurstSkill", menuName = "SO/Component/Skill/Attack/Shoot/Burst")]
 public class BurstSkillSO : ShootSkillSO
 {
     //==========================================Variable==========================================

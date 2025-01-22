@@ -20,8 +20,8 @@ public class NormalBullet : Bullet
     //==========================================Movement==========================================
     private void Move()
     {
-        if (!this.canMove) return;
-        this.rb.velocity = Vector2.zero;
-        MovementUtil.Instance.MoveForward(this.rb, this.moveSpeed);
+        //if (!this.canMove) return;
+        //this.rb.velocity = Vector2.zero;
+        //MovementUtil.Instance.MoveForward(this.rb, this.moveSpeed);
     }
 }

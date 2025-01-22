@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver, 
-    FireEffReceiver, WeaponUser, DualWieldUser, DashUser
+    FireEffReceiver, WeaponUser, DualWieldUser, DashUser, RegenSkillUser
 {
     protected enum PlayerState
     {
@@ -35,15 +35,14 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     [Header("// CharacterSkill")]
     [SerializeField] protected TempSkill characterSkill;
 
+    [Header("// Regen Amor")]
+    [SerializeField] protected TempRegenSkill regenAmorSkill;
+
     [Header("// TempWeapon")]
     [SerializeField] protected List<TempWeapon> tempWeapons;
     [SerializeField] protected Transform rightArm;
     [SerializeField] protected int maxWeaponSlot;
     [SerializeField] protected int currWeaponSlot;
-
-    [Header("// Amor Regen")]
-    [SerializeField] protected RegenSkill amorRegenSkill;
-
 
     //==========================================Get Set===========================================
     // Stat
@@ -62,6 +61,8 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.LoadComponent(ref this.rightArm, transform.Find("RightArm"), "LoadRightArm()");
         this.LoadComponent(ref this.tempWeapons, transform.Find("Weapon"), "LoadWeapons()");
         this.LoadComponent(ref this.dashSkill, transform.Find("DashSkill"), "LoadDashSkill()");
+        this.LoadComponent(ref this.regenAmorSkill, transform.Find("RegenAmorSkill"), 
+            "LoadRegenAmorSkill()");
         this.LoadChildComponent(ref this.characterSkill, transform.Find("CharacterSkill"),
             "LoadCharacterSkill()");
         this.LoadSO(ref this.so, "SO/Character/Player/" + transform.name);
@@ -76,7 +77,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         if (this.dashSkill != null)
         {
             this.dashSkill.SetOwner(transform);
-            this.dashSkill.MyLoadComponents();
+            this.dashSkill.MyLoadComponent();
             this.dashSkill.DefaultStat();
             this.dashSkill.ResetSkill();
         }
@@ -85,9 +86,18 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         if (this.characterSkill != null)
         {
             this.characterSkill.SetOwner(transform);
-            this.characterSkill.MyLoadComponents();
+            this.characterSkill.MyLoadComponent();
             this.characterSkill.DefaultStat();
             this.dashSkill.ResetSkill();
+        }
+
+        // Regen Amor
+        if (this.regenAmorSkill != null)
+        {
+            this.regenAmorSkill.SetOwner(transform);
+            this.regenAmorSkill.MyLoadComponent();
+            this.regenAmorSkill.DefaultStat();
+            this.regenAmorSkill.ResetSkill();
         }
     }
 
@@ -97,6 +107,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.canMove = true;
         this.dashSkill.ResetSkill();
         this.characterSkill.ResetSkill();
+        this.regenAmorSkill.ResetSkill();
         this.currWeaponSlot = 1;
     }
 
@@ -107,6 +118,9 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
 
         // Character Skill
         this.characterSkill.MyUpdate();
+
+        // Regen Amor
+        this.regenAmorSkill.MyUpdate();
     }
 
     protected virtual void FixedUpdate()
@@ -125,7 +139,7 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.characterSkill.MyFixedUpdate();
 
         // Amor Regen
-        this.AmorRegenFixedUpdate();
+        this.regenAmorSkill.MyFixedUpdate();
 
         // Animation
         this.AnimationHandling();
@@ -134,7 +148,6 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.WeaponHolding();
     }
     #endregion
-
 
     #region Stat
     //============================================================================================
@@ -235,27 +248,6 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
         this.canMove = true;
     }
 
-    //=========================================Amor Regen=========================================
-    protected virtual void AmorRegenFixedUpdate()
-    {
-        if (this.amor >= this.maxAmor) return;
-        if (!this.amorRegenSkill.IsRegening) this.amorRegenSkill.IsRecharging = true;
-        this.amorRegenSkill.Recharging();
-        this.amorRegenSkill.StartRegen();
-        this.amorRegenSkill.Regenerating();
-        this.amorRegenSkill.Regen(this, this, ref this.amor);
-
-        if (this.amor < this.maxAmor) return;
-        this.amorRegenSkill.FinishSkill();
-    }
-
-    protected virtual void DefaultAmorRegenSkill(PlayerSO playerSO)
-    {
-        this.amorRegenSkill = new RegenSkill(playerSO.AmorRegenSO, Time.fixedDeltaTime);
-        this.amorRegenSkill.IsRecharging = true;
-        this.amorRegenSkill.IsRegening = false;
-    }
-
     //=======================================DualWield User=======================================
     public TempWeapon GetMainWeapon()
     {
@@ -279,6 +271,44 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
     public Vector2 GetTargetPos()
     {
         return InputManager.Instance.MousePos;
+    }
+    #endregion
+
+
+
+    #region Regen
+    //============================================================================================
+    //=========================================Regen Amor=========================================
+    //============================================================================================
+    public RegenType GetRegenType()
+    {
+        return RegenType.INT;
+    }
+
+    public bool CanRegen()
+    {
+        if (this.amor < this.maxAmor) return true;
+        else return false;
+    }
+
+    public int maxInt()
+    {
+        return this.maxAmor;
+    }
+
+    public float maxFloat()
+    {
+        throw new System.Exception();
+    }
+
+    public ref int currInt()
+    {
+        return ref this.amor;
+    }
+
+    public ref float currFloat()
+    {
+        throw new System.Exception();
     }
     #endregion
 
@@ -430,7 +460,6 @@ public class Player : BaseCharacter, HpReceiver, ManaReceiver, PoisonEffReceiver
 
         this.DefaultPlayerStat(playerSO);
         this.DefaultWeapon(playerSO);
-        this.DefaultAmorRegenSkill(playerSO);
 
         this.Revive();
         this.canMove = true;

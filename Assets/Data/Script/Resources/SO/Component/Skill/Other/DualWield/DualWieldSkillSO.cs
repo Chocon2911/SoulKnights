@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "DualWield", menuName = "SO/Skill/DualWield")]
+[CreateAssetMenu(fileName = "DualWield", menuName = "SO/Component/Skill/Other/DualWield")]
 public class DualWieldSkillSO : SkillSO
 {
     //==========================================Variable==========================================

@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Movement", menuName = "SO/Component/Movement/Base")]
-public class MovementSO : ScriptableObject
+[CreateAssetMenu(fileName = "ChargeByTime", menuName = "SO/Component/Charge")]
+public class ChargeByTimeSO : ScriptableObject
 {
     //==========================================Variable==========================================
-    [Header("Movement")]
-    [SerializeField] private float moveSpeed;
+    [Header("Charge By Time")]
+    [SerializeField] private float chargeTime;
 
     //============================================Get=============================================
-    public float MoveSpeed => moveSpeed;
+    public float ChargeTime => chargeTime;
 }

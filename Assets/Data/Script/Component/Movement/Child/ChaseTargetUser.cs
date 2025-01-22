@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface ChaseTargetUser : MovementUser
 {
-    Vector2 GetTargetPos();
+    Transform GetTarget();
 }

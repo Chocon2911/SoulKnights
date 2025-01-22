@@ -36,7 +36,8 @@ public abstract class Movement : HuyMonoBehaviour
 
     public virtual void ResetMovement()
     {
-        // For Override
+        this.moveSpeed = this.so.MoveSpeed;
+        this.canMove = true;
     }
 
     public virtual void DefaultStat()

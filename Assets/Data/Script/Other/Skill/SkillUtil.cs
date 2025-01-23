@@ -70,18 +70,4 @@ public class SkillUtil
 
         return bullets;
     }
-
-    //===========================================Other============================================
-    public void ConsumeHp(HpReceiver receiver, Skill skill)
-    {
-        if (receiver == null) return;
-        if (receiver.GetCurrHp() <= skill.HpCost) return;
-        receiver.ReceiveHp(-skill.HpCost);
-    }
-
-    public void ConsumeMana(ManaReceiver receiver, Skill skill) 
-    {
-        if (receiver == null) return;
-        receiver.ReceiveMana(-skill.ManaCost);
-    }
 }

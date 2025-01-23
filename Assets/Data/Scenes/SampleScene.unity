@@ -487,6 +487,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b1fa79b364166e4db66468604cf4789, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  so: {fileID: 0}
   identifyZone: {fileID: 280393548}
   owner: {fileID: 1391256810}
   tags:
@@ -811,28 +812,12 @@ MonoBehaviour:
   playerState: 0
   dashSkill: {fileID: 103178561}
   characterSkill: {fileID: 1203057736}
+  regenAmorSkill: {fileID: 0}
   tempWeapons:
   - {fileID: 923247885}
   rightArm: {fileID: 913478561}
   maxWeaponSlot: 2
   currWeaponSlot: 1
-  amorRegenSkill:
-    manaCost: 0
-    hpCost: 0
-    skillCD:
-      timeLimit: 5
-      timer: 0
-      waitTime: 0.01
-      isReady: 0
-    regenCD:
-      timeLimit: 1
-      timer: 0
-      waitTime: 0.01
-      isReady: 0
-    regenInt: 1
-    regenFloat: 0
-    isRecharging: 1
-    isRegening: 0
 --- !u!50 &315542228
 Rigidbody2D:
   serializedVersion: 4
@@ -1639,6 +1624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b1fa79b364166e4db66468604cf4789, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  so: {fileID: 0}
   identifyZone: {fileID: 861994559}
   owner: {fileID: 0}
   tags:
@@ -1804,6 +1790,7 @@ Transform:
   m_Children:
   - {fileID: 795097553}
   - {fileID: 1293353942}
+  - {fileID: 1663739624}
   m_Father: {fileID: 586496360}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &923247885
@@ -1827,6 +1814,7 @@ MonoBehaviour:
   skills:
   - {fileID: 1966463918}
   - {fileID: 1939606967}
+  bulletSpawnPoint: {fileID: 0}
   isLeft: 0
 --- !u!4 &968558231 stripped
 Transform:
@@ -2352,6 +2340,7 @@ MonoBehaviour:
   skills:
   - {fileID: 1762983994}
   - {fileID: 859639038}
+  bulletSpawnPoint: {fileID: 0}
   isLeft: 0
 --- !u!1 &1276349100
 GameObject:
@@ -2564,6 +2553,7 @@ MonoBehaviour:
   holdRad: 1
   skills:
   - {fileID: 178970954}
+  bulletSpawnPoint: {fileID: 0}
   isLeft: 0
 --- !u!1 &1391256809
 GameObject:
@@ -2900,6 +2890,37 @@ MonoBehaviour:
     timer: 0
     waitTime: 0
     isReady: 0
+--- !u!1 &1663739623
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1663739624}
+  m_Layer: 6
+  m_Name: BulletSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1663739624
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663739623}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 923247884}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1725564191
 GameObject:
   m_ObjectHideFlags: 0
@@ -3641,6 +3662,7 @@ MonoBehaviour:
   holdRad: 1
   skills:
   - {fileID: 1847194270}
+  bulletSpawnPoint: {fileID: 0}
   isLeft: 0
 --- !u!4 &2057160314 stripped
 Transform:

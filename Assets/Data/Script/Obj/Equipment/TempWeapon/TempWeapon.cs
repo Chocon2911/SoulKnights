@@ -12,6 +12,7 @@ public class TempWeapon : BaseObj, ShootUser
     [SerializeField] private float holdRad;
     [SerializeField] private WeaponUser user;
     [SerializeField] private List<TempSkill> skills;
+    [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private bool isLeft;
  
     //===========================================Unity============================================
@@ -19,6 +20,8 @@ public class TempWeapon : BaseObj, ShootUser
     {
         base.LoadComponents();
         this.LoadComponent(ref this.skills, transform.Find("Skill"), "LoadSkills()");
+        this.LoadComponent(ref this.bulletSpawnPoint, transform.Find("BulletSpawnPoint"), 
+            "LoadBulletSpawnPoint()");
         this.LoadSO(ref this.so, "SO/Equipment/Weapon/" + transform.name);
 
         foreach (TempSkill skill in this.skills)
@@ -103,7 +106,7 @@ public class TempWeapon : BaseObj, ShootUser
 
     public Vector3 GetBulletPos()
     {
-        return transform.position;
+        return this.bulletSpawnPoint.position;
     }
 
     public float GetShootAngle()

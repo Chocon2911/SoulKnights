@@ -6,7 +6,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
-public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, ChargeByTimeUser, 
+public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser,
     MovementUser, ChaseTargetUser
 {
     //==========================================Variable==========================================
@@ -31,13 +31,7 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
     // Despawn
     [Header("// Despawn")]
     [SerializeField] protected List<Despawner> despawners;
-
-    // Charge
-    [Header("// Charge")]
-    [SerializeField] protected ChargeByTime charge;
-    [SerializeField] protected List<float> moveSpeeds;
-    [SerializeField] protected List<int> damages;
-    [SerializeField] protected float sizeMul;
+    
 
     // Component
     [Header("// Component")]
@@ -56,12 +50,6 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
     // IdentifyObjByCollide
     public IdentifyObjByCollide IdenObjByCollide { get => idenObjByCollide; set => idenObjByCollide = value; }
 
-    // Charge
-    public ChargeByTime Charge { get => charge; set => charge = value; }
-    public List<float> MoveSpeeds { get => moveSpeeds; set => moveSpeeds = value; }
-    public List<int> Damages { get => damages; set => damages = value; }
-    public float SizeMul { get => sizeMul; set => sizeMul = value; }
-
     // Component
     public Rigidbody2D Rb { get => rb; }
     public CapsuleCollider2D BodyColldier { get => bodyCollider; }
@@ -77,7 +65,6 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
         this.LoadComponent(ref this.movement, transform.Find("Movement"), "LoadMovement()");
         this.LoadComponent(ref this.idenObjByCollide, transform.Find("IdentifyObj"), 
             "LoadIdenObjByCollide()");
-        this.LoadComponent(ref this.charge, transform.Find("Charge"), "LoadCharge()");
 
         // Despawners
         foreach (Despawner despawner in this.despawners)
@@ -102,14 +89,6 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
             this.idenObjByCollide.MyLoadComponent();
         }
 
-        // Charge
-        if (this.charge != null)
-        {
-            this.charge.Owner = transform;
-            this.charge.MyLoadComponent();
-            this.charge.DefaultStat();
-        }
-
         // Default
         this.DefaultStat();
     }
@@ -121,9 +100,6 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
 
         // Despawners
         foreach (Despawner despawner in this.despawners) despawner.ResetDespawn();
-
-        // Charge
-        if (this.charge != null) this.charge.ResetCharge();
     }
 
     protected virtual void Update()
@@ -133,9 +109,6 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
 
         // Despawners
         foreach (Despawner despawner in this.despawners) despawner.MyUpdate();
-
-        // Charge
-        if (this.charge != null) this.charge.MyUpdate();
     }
 
     protected virtual void FixedUpdate()
@@ -145,9 +118,6 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
 
         // Despawner
         foreach (Despawner despawner in this.despawners) despawner.MyFixedUpdate();
-
-        // Charge
-        if (this.charge != null) this.charge.MyFixedUpdate();
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
@@ -203,26 +173,6 @@ public abstract class Bullet : BaseObj, DespawnUser, DespawnByDistanceUser, Char
     Vector2 DespawnByDistanceUser.GetTargetPos()
     {
         return this.shooter.position;
-    }
-
-
-
-    //============================================================================================
-    //===========================================Charge===========================================
-    //============================================================================================
-    void ChargeByTimeUser.OnCharging()
-    {
-        this.movement.MoveSpeed = this.moveSpeeds[this.charge.GetState(this.moveSpeeds.Count - 1)];
-        this.attribute.Damage = this.damages[this.charge.GetState(this.damages.Count)];
-        
-        transform.localScale *= this.sizeMul;
-        this.bodyCollider.size *= this.sizeMul;
-    }
-
-    void ChargeByTimeUser.OnFinishCharging()
-    {
-        this.movement.MoveSpeed = this.moveSpeeds[this.moveSpeeds.Count - 1];
-        this.attribute.Damage = this.damages[this.damages.Count - 1];
     }
 
 

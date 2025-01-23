@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Bullet", menuName = "SO/Bullet")]
+[CreateAssetMenu(fileName = "Bullet", menuName = "SO/Obj/Projectile/Bullet/Base")]
 public class BulletSO : ObjSO
 {
     //==========================================Variable==========================================
